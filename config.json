@@ -1,0 +1,69 @@
+{
+  "app_name": "PanFamilyTaskForce",
+  "app_title": "潘翼芃 潘一柠任务小分队系统",
+  "host": "0.0.0.0",
+  "port": 5088,
+  "primary_ip": "192.168.0.25",
+  "extra_access_ip": "192.168.31.13",
+  "default_grade": "五年级 & 二年级",
+  "default_class": "阳光成长小分队",
+  "users": {
+    "patrick": {
+      "password": "patrick123",
+      "role": "child",
+      "member_id": 1,
+      "name": "潘翼芃",
+      "nickname": "Patrick",
+      "avatar": "👦",
+      "grade": "五年级",
+      "allowed_tabs": ["tab-tasks", "tab-rewards"]
+    },
+    "penny": {
+      "password": "penny123",
+      "role": "child",
+      "member_id": 2,
+      "name": "潘一柠",
+      "nickname": "Penny",
+      "avatar": "👧",
+      "grade": "二年级",
+      "allowed_tabs": ["tab-tasks", "tab-rewards"]
+    },
+    "admin": {
+      "password": "admin123",
+      "role": "admin",
+      "member_id": null,
+      "name": "家长管理员",
+      "nickname": "Admin",
+      "avatar": "👨‍🏫",
+      "grade": "全权限管理",
+      "allowed_tabs": ["tab-weiqi", "tab-publish", "tab-tasks", "tab-rewards", "tab-templates"]
+    }
+  },
+  "members": [
+    {
+      "id": 1,
+      "name": "潘翼芃",
+      "username": "patrick",
+      "role": "哥哥 / 围棋小老师",
+      "avatar": "👦",
+      "grade": "五年级"
+    },
+    {
+      "id": 2,
+      "name": "潘一柠",
+      "username": "penny",
+      "role": "妹妹 / 学习小能手",
+      "avatar": "👧",
+      "grade": "二年级"
+    }
+  ],
+  "categories": [
+    "♟️ 教妹妹围棋",
+    "📖 语文天地",
+    "📐 数学探索",
+    "🔤 英语口语",
+    "🏃 体育运动",
+    "🔬 科学思维",
+    "📚 每日阅读"
+  ]
+}
