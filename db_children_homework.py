@@ -6,14 +6,10 @@ from datetime import datetime, date
 
 # Directory setup
 current_dir = os.path.dirname(os.path.abspath(__file__))
-SOULSERVICE_DB_PATH = "/Volumes/Soul_auto_local/sqlite/souluser.db"
 LOCAL_DB_PATH = os.path.join(current_dir, "homework.db")
 
-# Default to soulservice db (souluser.db) configured in DBeaver
-if os.path.exists(os.path.dirname(SOULSERVICE_DB_PATH)):
-	DB_PATH = SOULSERVICE_DB_PATH
-else:
-	DB_PATH = LOCAL_DB_PATH
+# Default to independent local homework.db (or custom path from env)
+DB_PATH = os.environ.get("CHILDREN_DB_PATH", LOCAL_DB_PATH)
 
 DEFAULT_CATEGORIES = [
 	"♟️ 教妹妹围棋",
