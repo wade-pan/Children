@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config.app_title }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4338ca;
+            --primary-light: #6366f1;
+            --primary-bg: #eef2ff;
+            --math-bg: #fef3c7;
+            --math-accent: #b45309;
+            --math-border: #fcd34d;
+            --success: #10b981;
+            --success-bg: #ecfdf5;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e0;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --gray-900: #0f172a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f3f0ff 0%, #e0e7ff 50%, #fef3c7 100%);
+            min-height: 100vh;
+            padding: 24px;
+            color: var(--gray-700);
+        }
+
+        /* Mandatory Login Overlay Gate */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .login-card-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+            max-width: 650px;
+            width: 100%;
+            overflow: hidden;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #312e81 0%, #4338ca 100%);
+            color: white;
+            padding: 28px 32px;
+            text-align: center;
+        }
+
+        .login-header h2 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-header p {
+            font-size: 0.88rem;
+            color: #c7d2fe;
+            margin-top: 6px;
+        }
+
+        .login-body {
+            padding: 28px 32px;
+        }
+
+        .quick-role-card {
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .quick-role-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .quick-role-card.anzai:hover {
+            border-color: #6366f1;
+            background: #f5f3ff;
+        }
+
+        .quick-role-card.anniu:hover {
+            border-color: #ec4899;
+            background: #fdf2f8;
+        }
+
+        .quick-role-card.admin:hover {
+            border-color: #f59e0b;
+            background: #fffbeb;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 20px 28px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(67, 56, 202, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            margin-bottom: 24px;
+        }
+
+        .app-title-group h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-subtitle {
+            font-size: 0.88rem;
+            color: var(--gray-500);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-badge {
+            background: var(--primary-bg);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #c7d2fe;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 8px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: var(--gray-500);
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary);
+            background: var(--primary-bg);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
+        }
+
+        .nav-tab.math-tab.active {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            box-shadow: 0 4px 14px rgba(180, 83, 9, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3730a3;
+            transform: translateY(-1px);
+        }
+
+        .btn-math {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: white;
+        }
+
+        .btn-math:hover {
+            background: #92400e;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* 趣味数学专区样式 */
+        .math-hero-banner {
+            background: linear-gradient(135deg, #78350f 0%, #b45309 50%, #d97706 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(180, 83, 9, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .math-stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border-radius: 14px;
+            padding: 12px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 120px;
+        }
+
+        .math-stat-val {
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .math-stat-lbl {
+            font-size: 0.78rem;
+            color: #fef3c7;
+            margin-top: 2px;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 18px;
+            border: 2px solid var(--gray-200);
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-3px);
+            border-color: #f59e0b;
+            box-shadow: 0 12px 24px rgba(245, 158, 11, 0.15);
+        }
+
+        .lesson-card.completed {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .lesson-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .lesson-num-badge {
+            background: #fef3c7;
+            color: #b45309;
+            font-weight: 800;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid #fde68a;
+        }
+
+        .lesson-difficulty {
+            color: #f59e0b;
+            font-size: 0.88rem;
+            letter-spacing: 1px;
+        }
+
+        .lesson-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .lesson-scenario {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            background: var(--gray-50);
+            padding: 10px 12px;
+            border-radius: 10px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        /* 模态弹窗与提示系统 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 20px;
+            max-width: 680px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            animation: modalPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* 提示层级卡片 */
+        .hint-box {
+            border: 2px dashed #fde68a;
+            background: #fffbeb;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .hint-box.revealed {
+            border-style: solid;
+            border-color: #f59e0b;
+            background: #fef3c7;
+        }
+
+        .hint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: #92400e;
+            font-size: 0.9rem;
+        }
+
+        .hint-content {
+            margin-top: 8px;
+            font-size: 0.88rem;
+            color: #78350f;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .hint-box.revealed .hint-content {
+            display: block;
+        }
+
+        /* 任务发布与表单 */
+        .publish-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--gray-200);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.88rem;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1.5px solid var(--gray-200);
+            font-size: 0.92rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .wechat-sim-box {
+            background: #2b2b2b;
+            border-radius: 16px;
+            padding: 18px;
+            color: #e5e5e5;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            min-height: 280px;
+            border: 1px solid #404040;
+        }
+
+        /* Toast 提示 */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: #1e1b4b;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: none;
+            z-index: 10000;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 900px) {
+            .publish-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 登录门禁 (Login Gate) -->
+<div id="loginOverlay">
+    <div class="login-card-container">
+        <div class="login-header">
+            <h2>🏆 {{ config.app_title }}</h2>
+            <p>请选择或输入你的登录账户进入系统</p>
+        </div>
+
+        <div class="login-body">
+            <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px;">
+                <!-- 安仔 (Anzai) -->
+                <div class="quick-role-card anzai" onclick="quickLogin('anzai', 'anzai123')">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 2.2rem;">👦</span>
+                        <div>
+                            <div style="font-weight: 800; color: #1e1b4b; font-size: 1.05rem;">安仔 (Anzai)</div>
+                            <div style="font-size: 0.8rem; color: #4338ca; font-weight: 600; margin-top: 2px;">9 岁 · 小学三年级 · 趣味数学与任务打卡</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" style="padding: 8px 16px; font-size: 0.85rem; border-radius: 8px;">一键登录</button>
+                </div>
+
+                <!-- 安妞 (Anniu) -->
+                <div class="quick-role-card anniu" onclick="quickLogin('anniu', 'anniu123')">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 2.2rem;">👧</span>
+                        <div>
+                            <div style="font-weight: 800; color: #831843; font-size: 1.05rem;">安妞 (Anniu)</div>
+                            <div style="font-size: 0.8rem; color: #db2777; font-weight: 600; margin-top: 2px;">12 岁 · 初中预备班 (初一) · 今日任务与积分榜</div>
+                        </div>
+                    </div>
+                    <button class="btn" style="background: #db2777; color: white; padding: 8px 16px; font-size: 0.85rem; border-radius: 8px;">一键登录</button>
+                </div>
+
+                <!-- 家长管理员 (Admin) -->
+                <div class="quick-role-card admin" onclick="quickLogin('admin', 'admin1234')">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 2.2rem;">👨‍🏫</span>
+                        <div>
+                            <div style="font-weight: 800; color: var(--gray-900); font-size: 1.05rem;">家长管理员 (Admin)</div>
+                            <div style="font-size: 0.8rem; color: var(--gray-500); font-weight: 600; margin-top: 2px;">全权限管理 · 趣味数学 / 发布任务 / 模板库</div>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; border-radius: 8px; font-weight: 700;">管理员登录</button>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--gray-200); margin: 20px 0;">
+
+            <form onsubmit="handleManualLogin(event)">
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <input type="text" id="loginUsername" class="form-control" placeholder="输入用户名 (如 anzai)" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="输入密码" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 12px; padding: 10px;">
+                    账号密码登录
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 主界面容器 -->
+<div class="app-container" id="mainAppContainer">
+    <header>
+        <div class="app-title-group">
+            <h1>🏆 {{ config.app_title }}</h1>
+            <div class="app-subtitle">
+                <span>📅 今日: {{ today }}</span>
+                <span>🏫 班级: {{ config.default_class }}</span>
+                <span>🌟 培养安仔数学兴趣 · 每日成长打卡</span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="user-badge" id="currentUserBadge">
+                <span id="badgeAvatar">👤</span>
+                <span id="badgeName">请登录</span>
+            </div>
+            <button class="btn btn-secondary" onclick="showLoginOverlay()" style="padding: 8px 14px; font-size: 0.85rem;">
+                👤 切换身份
+            </button>
+            <button class="btn btn-secondary" onclick="logout()" style="padding: 8px 14px; font-size: 0.85rem;">
+                🚪 退出
+            </button>
+        </div>
+    </header>
+
+    <!-- 导航标签 -->
+    <div class="nav-tabs" id="mainNavTabs">
+        <button class="nav-tab math-tab active" data-tab="tab-math" onclick="switchTab('tab-math')">
+            🧮 趣味数学 20 课
+        </button>
+        <button class="nav-tab" data-tab="tab-publish" onclick="switchTab('tab-publish')">
+            ✍️ 发布小分队任务
+        </button>
+        <button class="nav-tab" data-tab="tab-tasks" onclick="switchTab('tab-tasks')">
+            📋 今日任务与打卡清单
+        </button>
+        <button class="nav-tab" data-tab="tab-rewards" onclick="switchTab('tab-rewards')">
+            🌸 小红花与成长积分榜
+        </button>
+        <button class="nav-tab" data-tab="tab-templates" onclick="switchTab('tab-templates')">
+            📑 任务快捷模板库
+        </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 1: 🧮 趣味数学 20 课 -->
+    <!-- ========================================== -->
+    <div id="tab-math" class="tab-content active">
+        <div class="math-hero-banner">
+            <div>
+                <h2 style="font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                    🧮 安仔的趣味数学 20 课闯关专区
+                </h2>
+                <p style="font-size: 0.92rem; color: #fef3c7; margin-top: 6px; max-width: 620px;">
+                    专为 9 岁安仔打造的生活趣味数学！层层递进，包含 3 级层级提示与解题小红花奖励。
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <div class="math-stat-box">
+                    <div class="math-stat-val" id="statCompletedLessons">0 / 20</div>
+                    <div class="math-stat-lbl">已通关课时</div>
+                </div>
+                <div class="math-stat-box">
+                    <div class="math-stat-val" id="statMathFlowers">0 🌸</div>
+                    <div class="math-stat-lbl">数学斩获红花</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--gray-900);">
+                📚 关卡列表 (从第 1 课至第 20 课 · 难度循序渐进)
+            </div>
+            <button class="btn btn-secondary" onclick="loadMathLessons()">🔄 刷新关卡状态</button>
+        </div>
+
+        <div class="lessons-grid" id="lessonsGrid">
+            <!-- 动态渲染 20 门课 -->
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: ✍️ 发布小分队任务 -->
+    <!-- ========================================== -->
+    <div id="tab-publish" class="tab-content">
+        <div class="publish-grid">
+            <div class="card">
+                <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; color: var(--gray-900);">
+                    ✍️ 填写任务信息
+                </h2>
+                <form id="publishTaskForm" onsubmit="handlePublishTask(event)">
+                    <div class="form-group">
+                        <label>📌 任务名称</label>
+                        <input type="text" id="taskTitle" class="form-control" placeholder="如：趣味数学第1课或古诗背诵" required oninput="updateWechatPreview()">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>🏷️ 任务类别</label>
+                            <select id="taskCategory" class="form-control" onchange="updateWechatPreview()">
+                                <option value="🧮 趣味数学20课">🧮 趣味数学20课</option>
+                                <option value="📖 语文天地">📖 语文天地</option>
+                                <option value="📐 数学探索">📐 数学探索</option>
+                                <option value="🔤 英语口语">🔤 英语口语</option>
+                                <option value="🏃 体育运动">🏃 体育运动</option>
+                                <option value="🔬 科学思维">🔬 科学思维</option>
+                                <option value="📚 每日阅读">📚 每日阅读</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>👤 执行队员</label>
+                            <select id="taskAssignee" class="form-control" onchange="updateWechatPreview()">
+                                <option value="全员">👥 全员 (安仔 + 安妞)</option>
+                                <option value="安仔">👦 安仔 (9岁 · 三年级)</option>
+                                <option value="安妞">👧 安妞 (12岁 · 初中预备班)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>⏰ 截止日期</label>
+                            <input type="date" id="taskDueDate" class="form-control" value="{{ today }}" onchange="updateWechatPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>🌸 奖励小红花</label>
+                            <input type="number" id="taskRewardFlowers" class="form-control" value="2" min="1" max="10" oninput="updateWechatPreview()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>📝 任务具体内容</label>
+                        <textarea id="taskContent" class="form-control" rows="4" placeholder="写明具体任务内容..." required oninput="updateWechatPreview()"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>💡 完成要求与标准 (可选)</label>
+                        <textarea id="taskRequirements" class="form-control" rows="2" placeholder="如：书写工整、独立思考..." oninput="updateWechatPreview()"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1rem;">
+                        🚀 确认发布任务并在群内播报
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--gray-900);">
+                        📱 微信群通知文案实时预览
+                    </h2>
+                    <button class="btn btn-secondary" onclick="copyWechatPreview()">
+                        📋 一键复制播报
+                    </button>
+                </div>
+                <div class="wechat-sim-box" id="wechatPreviewBox">正在生成排版文案...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: 📋 今日任务与打卡清单 -->
+    <!-- ========================================== -->
+    <div id="tab-tasks" class="tab-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="font-size: 1.25rem; font-weight: 800; color: var(--gray-900);">
+                📋 任务打卡清单与执行进度
+            </div>
+            <button class="btn btn-secondary" onclick="loadHomeworkList()">🔄 刷新列表</button>
+        </div>
+        <div id="homeworkListContainer" style="display: flex; flex-direction: column; gap: 16px;">
+            <!-- 动态渲染任务列表 -->
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: 🌸 小红花与成长积分榜 -->
+    <!-- ========================================== -->
+    <div id="tab-rewards" class="tab-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="font-size: 1.25rem; font-weight: 800; color: var(--gray-900);">
+                🌸 小红花与成长星星实时榜单
+            </div>
+            <button class="btn btn-secondary" onclick="loadStudentsRewards()">🔄 刷新积分榜</button>
+        </div>
+        <div id="rewardsCardsGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+            <!-- 动态渲染队员积分卡片 -->
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: 📑 任务快捷模板库 -->
+    <!-- ========================================== -->
+    <div id="tab-templates" class="tab-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="font-size: 1.25rem; font-weight: 800; color: var(--gray-900);">
+                📑 常用任务快捷模板库 (一键引入发布)
+            </div>
+            <button class="btn btn-secondary" onclick="loadTemplates()">🔄 刷新模板</button>
+        </div>
+        <div id="templatesListGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px;">
+            <!-- 动态渲染模板卡片 -->
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- 模态框：趣味数学答题闯关挑战 -->
+<!-- ========================================== -->
+<div class="modal-overlay" id="mathModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h3 id="modalLessonTitle" style="font-size: 1.25rem; font-weight: 800; color: var(--gray-900);">第 1 课挑战</h3>
+            <button class="btn btn-secondary" onclick="closeMathModal()" style="padding: 6px 12px; border-radius: 8px;">✕</button>
+        </div>
+        <div class="modal-body">
+            <!-- 场景故事卡片 -->
+            <div style="background: #fef3c7; border: 1.5px solid #fde68a; border-radius: 14px; padding: 16px; margin-bottom: 18px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: #b45309; margin-bottom: 4px;">📖 生活趣味小情景:</div>
+                <div id="modalScenario" style="font-size: 0.95rem; color: #78350f; line-height: 1.6;"></div>
+            </div>
+
+            <!-- 问题展示 -->
+            <div style="background: #f1f5f9; border-radius: 14px; padding: 18px; margin-bottom: 20px;">
+                <div style="font-size: 0.8rem; font-weight: 800; color: var(--gray-500); margin-bottom: 4px;">❓ 核心思考题:</div>
+                <div id="modalQuestion" style="font-size: 1.1rem; font-weight: 800; color: var(--gray-900); line-height: 1.5;"></div>
+            </div>
+
+            <!-- 3 级层级提示面板 -->
+            <div style="margin-bottom: 22px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span style="font-weight: 800; font-size: 0.9rem; color: var(--gray-700);">💡 解题提示锦囊 (共 3 级)</span>
+                    <span id="modalRewardPreview" style="font-size: 0.82rem; font-weight: 700; color: #d97706;">
+                        当前答对奖励: 🌸 x3 (未揭开提示)
+                    </span>
+                </div>
+
+                <div id="hintBox1" class="hint-box">
+                    <div class="hint-header">
+                        <span>💡 提示 1 (思路点拨)</span>
+                        <button class="btn btn-secondary" id="btnReveal1" onclick="revealHint(1)" style="padding: 4px 10px; font-size: 0.78rem;">揭开提示 1</button>
+                    </div>
+                    <div class="hint-content" id="hintContent1"></div>
+                </div>
+
+                <div id="hintBox2" class="hint-box">
+                    <div class="hint-header">
+                        <span>🔍 提示 2 (关键算式 / 图解)</span>
+                        <button class="btn btn-secondary" id="btnReveal2" onclick="revealHint(2)" style="padding: 4px 10px; font-size: 0.78rem;">揭开提示 2</button>
+                    </div>
+                    <div class="hint-content" id="hintContent2"></div>
+                </div>
+
+                <div id="hintBox3" class="hint-box">
+                    <div class="hint-header">
+                        <span>🎯 提示 3 (详细解法)</span>
+                        <button class="btn btn-secondary" id="btnReveal3" onclick="revealHint(3)" style="padding: 4px 10px; font-size: 0.78rem;">揭开提示 3</button>
+                    </div>
+                    <div class="hint-content" id="hintContent3"></div>
+                </div>
+            </div>
+
+            <!-- 答题提交区域 -->
+            <div style="background: var(--gray-50); border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 18px;">
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>✍️ 请输入你的最终计算答案 <span id="modalAnswerUnit"></span></label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="modalStudentAnswer" class="form-control" placeholder="输入答案 (如 7 或 7点50分)" style="font-size: 1.1rem; font-weight: 700;">
+                        <button class="btn btn-math" onclick="submitCurrentMathLesson()" style="padding: 0 24px; white-space: nowrap;">
+                            🎯 提交答案
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 答案解析卡片 (提交成功后展示) -->
+            <div id="modalSolutionBox" style="display: none; margin-top: 18px; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 14px; padding: 16px;">
+                <div style="font-weight: 800; color: #065f46; font-size: 0.92rem; margin-bottom: 6px;">🎉 通关解析与巧解思路:</div>
+                <div id="modalSolutionText" style="font-size: 0.88rem; color: #047857; line-height: 1.6;"></div>
+                <button class="btn btn-success" id="btnCopyMathWechat" onclick="copyMathWechatReport()" style="margin-top: 12px; width: 100%;">
+                    📢 一键复制微信喜报发送到群聊
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast 浮层提示 -->
+<div id="toast"></div>
+
+<script>
+    let currentUser = null;
+    let allMathLessons = [];
+    let currentActiveLesson = null;
+    let currentRevealedHints = new Set();
+    let currentWechatMathText = "";
+
+    window.onload = async function() {
+        await checkCurrentUser();
+        updateWechatPreview();
+    };
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.style.display = 'block';
+        setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    async function checkCurrentUser() {
+        try {
+            const res = await fetch('/api/current_user');
+            const data = await res.json();
+            if (data.success && data.logged_in) {
+                setCurrentUser(data.user);
+            } else {
+                showLoginOverlay();
+            }
+        } catch(e) {
+            showLoginOverlay();
+        }
+    }
+
+    function showLoginOverlay() {
+        document.getElementById('loginOverlay').style.display = 'flex';
+    }
+
+    function setCurrentUser(user) {
+        currentUser = user;
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('badgeAvatar').innerText = user.avatar || '👤';
+        document.getElementById('badgeName').innerText = `${user.name} (${user.grade || ''})`;
+        
+        loadMathLessons();
+        loadHomeworkList();
+        loadStudentsRewards();
+        loadTemplates();
+    }
+
+    async function quickLogin(username, password) {
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setCurrentUser(data.user);
+                showToast(data.message || '登录成功！');
+            } else {
+                alert(data.error || '登录失败');
+            }
+        } catch(e) {
+            alert('网络异常，请重试');
+        }
+    }
+
+    async function handleManualLogin(e) {
+        e.preventDefault();
+        const u = document.getElementById('loginUsername').value.trim();
+        const p = document.getElementById('loginPassword').value.trim();
+        await quickLogin(u, p);
+    }
+
+    async function logout() {
+        await fetch('/api/logout', { method: 'POST' });
+        currentUser = null;
+        showLoginOverlay();
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        const btn = document.querySelector(`[data-tab="${tabId}"]`);
+        if (btn) btn.classList.add('active');
+        const content = document.getElementById(tabId);
+        if (content) content.classList.add('active');
+    }
+
+    /* ========================================== */
+    /* 趣味数学 20 课交互逻辑 */
+    /* ========================================== */
+    async function loadMathLessons() {
+        try {
+            const sName = (currentUser && currentUser.name === '安仔') ? '安仔' : '安仔';
+            const res = await fetch(`/api/math/lessons?student_name=${encodeURIComponent(sName)}`);
+            const data = await res.json();
+            if (data.success) {
+                allMathLessons = data.lessons;
+                renderMathLessonsGrid(allMathLessons);
+                updateMathHeaderStats(allMathLessons);
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    function updateMathHeaderStats(lessons) {
+        const completed = lessons.filter(l => l.status === 'completed');
+        document.getElementById('statCompletedLessons').innerText = `${completed.length} / ${lessons.length}`;
+        let flowers = 0;
+        completed.forEach(c => {
+            if (c.submission) flowers += (c.submission.reward_flowers || 0);
+        });
+        document.getElementById('statMathFlowers').innerText = `${flowers} 🌸`;
+    }
+
+    function renderMathLessonsGrid(lessons) {
+        const grid = document.getElementById('lessonsGrid');
+        grid.innerHTML = '';
+
+        lessons.forEach(l => {
+            const card = document.createElement('div');
+            card.className = `lesson-card ${l.status === 'completed' ? 'completed' : ''}`;
+            
+            const diffStars = '⭐'.repeat(l.difficulty || 1);
+            const isDone = l.status === 'completed';
+            const badgeText = isDone ? '✅ 已通关' : '🚀 待挑战';
+            const badgeBg = isDone ? '#10b981' : '#f59e0b';
+
+            card.innerHTML = `
+                <div>
+                    <div class="lesson-card-header">
+                        <span class="lesson-num-badge">第 ${l.lesson_id} 课</span>
+                        <span class="lesson-difficulty">${diffStars}</span>
+                    </div>
+                    <div class="lesson-title">${l.title}</div>
+                    <div style="font-size: 0.8rem; color: #b45309; font-weight: 700; margin-bottom: 8px;">
+                        🏷️ 分类: ${l.category_tag}
+                    </div>
+                    <div class="lesson-scenario">${l.story_scenario}</div>
+                </div>
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                        <span style="font-size: 0.82rem; font-weight: 700; color: ${badgeBg};">
+                            ${badgeText} ${isDone ? `(+${l.submission ? l.submission.reward_flowers : 3}🌸)` : ''}
+                        </span>
+                        <button class="btn btn-math" onclick="openMathChallenge(${l.lesson_id})" style="padding: 8px 16px; font-size: 0.85rem;">
+                            ${isDone ? '📖 查看解析' : '🎯 开始闯关'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function openMathChallenge(lessonId) {
+        const lesson = allMathLessons.find(l => l.lesson_id === lessonId);
+        if (!lesson) return;
+
+        currentActiveLesson = lesson;
+        currentRevealedHints.clear();
+
+        document.getElementById('modalLessonTitle').innerText = `${lesson.title} · 闯关挑战`;
+        document.getElementById('modalScenario').innerText = lesson.story_scenario;
+        document.getElementById('modalQuestion').innerText = lesson.question;
+        document.getElementById('modalAnswerUnit').innerText = lesson.answer_unit ? `(单位: ${lesson.answer_unit})` : '';
+        document.getElementById('modalStudentAnswer').value = '';
+
+        // Reset hints UI
+        for (let i = 1; i <= 3; i++) {
+            const box = document.getElementById(`hintBox${i}`);
+            const btn = document.getElementById(`btnReveal${i}`);
+            const content = document.getElementById(`hintContent${i}`);
+            box.classList.remove('revealed');
+            btn.style.display = 'block';
+            content.style.display = 'none';
+
+            if (lesson.hints && lesson.hints[i - 1]) {
+                content.innerText = lesson.hints[i - 1].content;
+            } else {
+                content.innerText = '暂无详细提示';
+            }
+        }
+
+        // If already completed, show submission record
+        if (lesson.status === 'completed' && lesson.submission) {
+            document.getElementById('modalSolutionBox').style.display = 'block';
+            document.getElementById('modalSolutionText').innerText = lesson.solution_explanation;
+            document.getElementById('modalStudentAnswer').value = lesson.submission.student_answer || '';
+            currentWechatMathText = `🎉 【团团媛媛成长小分队 · 趣味数学喜报】\n👦 队员: 安仔 (9岁)\n🧮 关卡: ${lesson.title}\n🌸 斩获小红花: x${lesson.submission.reward_flowers}，星星: x${lesson.submission.reward_stars}`;
+        } else {
+            document.getElementById('modalSolutionBox').style.display = 'none';
+        }
+
+        updateHintRewardPreview();
+        document.getElementById('mathModal').style.display = 'flex';
+    }
+
+    function closeMathModal() {
+        document.getElementById('mathModal').style.display = 'none';
+    }
+
+    function revealHint(level) {
+        currentRevealedHints.add(level);
+        const box = document.getElementById(`hintBox${level}`);
+        const btn = document.getElementById(`btnReveal${level}`);
+        const content = document.getElementById(`hintContent${level}`);
+
+        box.classList.add('revealed');
+        btn.style.display = 'none';
+        content.style.display = 'block';
+
+        updateHintRewardPreview();
+    }
+
+    function updateHintRewardPreview() {
+        const count = currentRevealedHints.size;
+        let flowers = 3;
+        if (count === 1) flowers = 2;
+        else if (count >= 2) flowers = 1;
+
+        const hintText = count === 0 ? '未使用提示' : `已揭开 ${count} 层提示`;
+        document.getElementById('modalRewardPreview').innerText = `当前答对奖励: 🌸 x${flowers} (${hintText})`;
+    }
+
+    async function submitCurrentMathLesson() {
+        if (!currentActiveLesson) return;
+        const answer = document.getElementById('modalStudentAnswer').value.trim();
+        if (!answer) {
+            alert('请先输入你的答案！');
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/math/lessons/${currentActiveLesson.lesson_id}/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student_name: '安仔',
+                    student_answer: answer,
+                    hints_used_levels: Array.from(currentRevealedHints)
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message);
+                currentWechatMathText = data.wechat_text;
+                document.getElementById('modalSolutionBox').style.display = 'block';
+                document.getElementById('modalSolutionText').innerText = currentActiveLesson.solution_explanation;
+                loadMathLessons();
+                loadStudentsRewards();
+            } else {
+                alert(data.error || '提交失败');
+            }
+        } catch(e) {
+            alert('网络异常，请重试');
+        }
+    }
+
+    function copyMathWechatReport() {
+        if (!currentWechatMathText) return;
+        navigator.clipboard.writeText(currentWechatMathText).then(() => {
+            showToast('📋 微信喜报已复制，快去发到微信群吧！');
+        });
+    }
+
+    /* ========================================== */
+    /* 任务发布与微信文案预览 */
+    /* ========================================== */
+    function updateWechatPreview() {
+        const title = document.getElementById('taskTitle').value.trim() || '【任务标题】';
+        const category = document.getElementById('taskCategory').value;
+        const assignee = document.getElementById('taskAssignee').value;
+        const due_date = document.getElementById('taskDueDate').value;
+        const flowers = document.getElementById('taskRewardFlowers').value || 1;
+        const content = document.getElementById('taskContent').value.trim() || '（请在此填写具体任务内容）';
+        const req = document.getElementById('taskRequirements').value.trim();
+
+        let text = `📢 【团团媛媛成长小分队 · 任务发布】\n`;
+        text += `━━━━━━━━━━━━━━━\n`;
+        text += `📌 任务名称: ${title}\n`;
+        text += `🏷️ 任务类别: ${category}\n`;
+        text += `👤 执行队员: ${assignee}\n`;
+        text += `⏰ 截止时间: ${due_date} 20:00\n`;
+        text += `🌸 奖励红花: ${flowers} 朵\n`;
+        text += `━━━━━━━━━━━━━━━\n`;
+        text += `📝 任务内容:\n${content}\n`;
+        if (req) {
+            text += `\n💡 完成要求:\n${req}\n`;
+        }
+        text += `━━━━━━━━━━━━━━━\n`;
+        text += `💪 加油！做完请及时打卡获取红花哦～✨`;
+
+        document.getElementById('wechatPreviewBox').innerText = text;
+    }
+
+    function copyWechatPreview() {
+        const text = document.getElementById('wechatPreviewBox').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('📋 微信播报文案已复制！');
+        });
+    }
+
+    async function handlePublishTask(e) {
+        e.preventDefault();
+        const payload = {
+            title: document.getElementById('taskTitle').value.trim(),
+            category: document.getElementById('taskCategory').value,
+            assignee: document.getElementById('taskAssignee').value,
+            due_date: document.getElementById('taskDueDate').value,
+            due_time: '20:00',
+            reward_flowers: parseInt(document.getElementById('taskRewardFlowers').value) || 1,
+            content: document.getElementById('taskContent').value.trim(),
+            requirements: document.getElementById('taskRequirements').value.trim()
+        };
+
+        try {
+            const res = await fetch('/api/homework', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('🎉 任务发布成功！');
+                document.getElementById('publishTaskForm').reset();
+                updateWechatPreview();
+                loadHomeworkList();
+                switchTab('tab-tasks');
+            } else {
+                alert(data.error || '发布失败');
+            }
+        } catch(e) {
+            alert('网络异常');
+        }
+    }
+
+    /* ========================================== */
+    /* 今日任务清单与打卡 */
+    /* ========================================== */
+    async function loadHomeworkList() {
+        try {
+            const res = await fetch('/api/homework');
+            const data = await res.json();
+            if (data.success) {
+                renderHomeworkList(data.homework);
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    function renderHomeworkList(list) {
+        const container = document.getElementById('homeworkListContainer');
+        container.innerHTML = '';
+        if (list.length === 0) {
+            container.innerHTML = '<div style="text-align: center; color: var(--gray-500); padding: 40px;">暂无待办任务，快去发布一个吧！</div>';
+            return;
+        }
+
+        list.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <div>
+                        <span style="background: var(--primary-bg); color: var(--primary); padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;">
+                            ${item.category}
+                        </span>
+                        <span style="font-weight: 800; font-size: 1.15rem; color: var(--gray-900); margin-left: 8px;">
+                            ${item.title}
+                        </span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #b45309; font-weight: 700;">
+                        🌸 奖励: ${item.reward_flowers} 朵
+                    </div>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--gray-700); line-height: 1.5; margin-bottom: 12px; white-space: pre-wrap;">
+                    ${item.content}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--gray-200); padding-top: 12px;">
+                    <div style="font-size: 0.82rem; color: var(--gray-500);">
+                        👤 执行人: <b>${item.assignee}</b> · ⏰ 截止: <b>${item.due_date} ${item.due_time}</b>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="copyTaskWechat('${item.id}')" style="padding: 6px 12px; font-size: 0.8rem;">
+                            📋 复制播报
+                        </button>
+                        <button class="btn btn-success" onclick="checkinTask('${item.id}')" style="padding: 6px 12px; font-size: 0.8rem;">
+                            ✅ 一键打卡
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteTask('${item.id}')" style="padding: 6px 10px; font-size: 0.8rem;">
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    async function checkinTask(hwId) {
+        const studentName = currentUser ? currentUser.name : '安仔';
+        if (!confirm(`确认队员【${studentName}】已完成该任务并打卡？`)) return;
+
+        try {
+            const res = await fetch(`/api/homework/${hwId}/checkin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ student_name: studentName, feedback: '任务已顺利完成' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message);
+                loadHomeworkList();
+                loadStudentsRewards();
+            } else {
+                alert(data.error);
+            }
+        } catch(e) {
+            alert('网络异常');
+        }
+    }
+
+    async function deleteTask(hwId) {
+        if (!confirm('确定要删除这条任务吗？')) return;
+        try {
+            const res = await fetch(`/api/homework/${hwId}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message);
+                loadHomeworkList();
+            }
+        } catch(e) {
+            alert('网络异常');
+        }
+    }
+
+    /* ========================================== */
+    /* 小红花与成长积分榜 */
+    /* ========================================== */
+    async function loadStudentsRewards() {
+        try {
+            const res = await fetch('/api/students');
+            const data = await res.json();
+            if (data.success) {
+                renderRewardsGrid(data.students);
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    function renderRewardsGrid(students) {
+        const grid = document.getElementById('rewardsCardsGrid');
+        grid.innerHTML = '';
+
+        students.forEach(st => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.textAlign = 'center';
+            card.innerHTML = `
+                <div style="font-size: 3.5rem; margin-bottom: 10px;">${st.avatar || '👤'}</div>
+                <div style="font-size: 1.35rem; font-weight: 800; color: var(--gray-900);">${st.name}</div>
+                <div style="font-size: 0.85rem; color: var(--gray-500); margin-top: 2px;">${st.grade} · ${st.role}</div>
+                
+                <div style="display: flex; justify-content: center; gap: 20px; margin: 20px 0;">
+                    <div style="background: #fdf2f8; border: 1.5px solid #fbcfe8; border-radius: 14px; padding: 12px 20px; min-width: 110px;">
+                        <div style="font-size: 1.6rem; font-weight: 800; color: #db2777;">${st.flowers} 🌸</div>
+                        <div style="font-size: 0.78rem; color: #9d174d; margin-top: 2px;">小红花奖励</div>
+                    </div>
+                    <div style="background: #fef3c7; border: 1.5px solid #fde68a; border-radius: 14px; padding: 12px 20px; min-width: 110px;">
+                        <div style="font-size: 1.6rem; font-weight: 800; color: #d97706;">${st.stars} ⭐</div>
+                        <div style="font-size: 0.78rem; color: #92400e; margin-top: 2px;">成长积分星星</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                    <button class="btn btn-secondary" onclick="adjustPoints(${st.id}, 1, 1)" style="padding: 8px 16px; font-size: 0.85rem;">
+                        🌸 +1 红花
+                    </button>
+                    <button class="btn btn-secondary" onclick="adjustPoints(${st.id}, -1, -1)" style="padding: 8px 16px; font-size: 0.85rem;">
+                        扣减 1 朵
+                    </button>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    async function adjustPoints(studentId, df, ds) {
+        try {
+            const res = await fetch(`/api/students/${studentId}/adjust`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ delta_flowers: df, delta_stars: ds })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message);
+                loadStudentsRewards();
+            }
+        } catch(e) {
+            alert('网络异常');
+        }
+    }
+
+    /* ========================================== */
+    /* 快捷模板库 */
+    /* ========================================== */
+    async function loadTemplates() {
+        try {
+            const res = await fetch('/api/templates');
+            const data = await res.json();
+            if (data.success) {
+                renderTemplatesGrid(data.templates);
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    function renderTemplatesGrid(templates) {
+        const grid = document.getElementById('templatesListGrid');
+        grid.innerHTML = '';
+
+        templates.forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div style="font-weight: 800; font-size: 1.05rem; color: var(--gray-900); margin-bottom: 6px;">
+                    ${t.name}
+                </div>
+                <div style="font-size: 0.82rem; color: var(--primary); font-weight: 700; margin-bottom: 10px;">
+                    🏷️ ${t.category} · 👤 适用: ${t.assignee} · 🌸 ${t.reward_flowers}朵
+                </div>
+                <div style="font-size: 0.85rem; color: var(--gray-500); line-height: 1.5; margin-bottom: 16px;">
+                    ${t.content}
+                </div>
+                <button class="btn btn-primary" onclick="useTemplate('${encodeURIComponent(JSON.stringify(t))}')" style="width: 100%; padding: 8px; font-size: 0.85rem;">
+                    🚀 引入发布此任务
+                </button>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function useTemplate(encodedJson) {
+        const t = JSON.parse(decodeURIComponent(encodedJson));
+        document.getElementById('taskTitle').value = t.name;
+        document.getElementById('taskCategory').value = t.category;
+        document.getElementById('taskAssignee').value = t.assignee;
+        document.getElementById('taskRewardFlowers').value = t.reward_flowers;
+        document.getElementById('taskContent').value = t.content;
+        document.getElementById('taskRequirements').value = t.requirements || '';
+        
+        updateWechatPreview();
+        switchTab('tab-publish');
+        showToast('📑 模板已成功引入！');
+    }
+</script>
+</body>
+</html>

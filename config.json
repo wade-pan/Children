@@ -1,0 +1,73 @@
+{
+  "app_name": "TuanTuanYuanYuanTaskForce",
+  "app_title": "安仔 安妞任务小分队系统",
+  "host": "0.0.0.0",
+  "port": 5089,
+  "primary_ip": "192.168.0.25",
+  "extra_access_ip": "192.168.31.13",
+  "default_grade": "三年级 & 初中预备班",
+  "default_class": "团团媛媛成长小分队",
+  "users": {
+    "anzai": {
+      "password": "anzai123",
+      "role": "child",
+      "member_id": 1,
+      "name": "安仔",
+      "nickname": "Anzai",
+      "avatar": "👦",
+      "age": 9,
+      "grade": "三年级 (小学)",
+      "allowed_tabs": ["tab-math", "tab-tasks", "tab-rewards"]
+    },
+    "anniu": {
+      "password": "anniu123",
+      "role": "child",
+      "member_id": 2,
+      "name": "安妞",
+      "nickname": "Anniu",
+      "avatar": "👧",
+      "age": 12,
+      "grade": "初中预备班 (初一)",
+      "allowed_tabs": ["tab-math", "tab-tasks", "tab-rewards"]
+    },
+    "admin": {
+      "password": "admin1234",
+      "role": "admin",
+      "member_id": null,
+      "name": "家长管理员",
+      "nickname": "Admin",
+      "avatar": "👨‍🏫",
+      "grade": "全权限管理",
+      "allowed_tabs": ["tab-math", "tab-publish", "tab-tasks", "tab-rewards", "tab-templates"]
+    }
+  },
+  "members": [
+    {
+      "id": 1,
+      "name": "安仔",
+      "username": "anzai",
+      "role": "弟弟 / 趣味数学探索官",
+      "avatar": "👦",
+      "age": 9,
+      "grade": "小学三年级"
+    },
+    {
+      "id": 2,
+      "name": "安妞",
+      "username": "anniu",
+      "role": "姐姐 / 学习小能手",
+      "avatar": "👧",
+      "age": 12,
+      "grade": "初中预备班 (初一)"
+    }
+  ],
+  "categories": [
+    "🧮 趣味数学20课",
+    "📖 语文天地",
+    "📐 数学探索",
+    "🔤 英语口语",
+    "🏃 体育运动",
+    "🔬 科学思维",
+    "📚 每日阅读"
+  ]
+}
