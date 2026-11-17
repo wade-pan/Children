@@ -12,9 +12,11 @@ echo "=================================================="
 
 # 使用可用的 python 或 python3
 if command -v python3 &>/dev/null; then
-    exec python3 app.py
+    exec python3 -u app.py
+elif command -v py3 &>/dev/null; then
+    exec py3 -u app.py
 elif command -v python &>/dev/null; then
-    exec python app.py
+    exec python -u app.py
 else
     echo "❌ 错误: 未检测到 python 或 python3 环境"
     exit 1

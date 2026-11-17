@@ -10,15 +10,13 @@ if current_dir not in sys.path:
 	sys.path.insert(0, current_dir)
 
 def get_all_local_ips():
-	"""Discovers all active local IPv4 addresses across any network interface."""
+	"""Discovers active local IPv4 addresses safely and quickly without blocking DNS resolution."""
 	ips = set()
-	
-	# 1. Probe through UDP sockets to various subnets
-	probe_targets = ['192.168.31.1', '192.168.0.1', '192.168.1.1', '10.0.0.1', '172.16.0.1', '8.8.8.8']
+	probe_targets = ['8.8.8.8', '192.168.31.1', '192.168.0.1', '1.1.1.1']
 	for target in probe_targets:
 		try:
 			s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-			s.settimeout(0.2)
+			s.settimeout(0.05)
 			s.connect((target, 80))
 			ip = s.getsockname()[0]
 			if ip and not ip.startswith('127.'):
@@ -26,27 +24,6 @@ def get_all_local_ips():
 			s.close()
 		except Exception:
 			pass
-
-	# 2. Hostname resolution
-	try:
-		hostname = socket.gethostname()
-		for ip in socket.gethostbyname_ex(hostname)[2]:
-			if ip and not ip.startswith('127.'):
-				ips.add(ip)
-	except Exception:
-		pass
-
-	# 3. Read from system ifconfig on macOS / Linux
-	try:
-		import subprocess
-		out = subprocess.check_output("ifconfig", shell=True, text=True, timeout=1)
-		import re
-		for ip in re.findall(r'inet\s+(\d+\.\d+\.\d+\.\d+)', out):
-			if ip and not ip.startswith('127.'):
-				ips.add(ip)
-	except Exception:
-		pass
-
 	return sorted(list(ips))
 
 from db_children_homework import (
@@ -899,21 +876,28 @@ def delete_template(template_id):
 		return jsonify({"success": False, "error": str(e)})
 
 if __name__ == "__main__":
+	try:
+		reconfig = getattr(sys.stdout, "reconfigure", None)
+		if callable(reconfig):
+			reconfig(line_buffering=True)
+	except Exception:
+		pass
+
 	host = config_data.get("host", "0.0.0.0")
 	port = int(config_data.get("port", 5088))
 	extra_ip = config_data.get("extra_access_ip", "192.168.31.13")
 	local_ips = get_all_local_ips()
 
-	print("=" * 65)
-	print("🏆 潘翼芃 潘一柠任务小分队系统 (Task Force Hub) 已启动")
-	print(f"📍 本地访问地址: http://localhost:{port}")
-	print(f"📍 本地 127 地址: http://127.0.0.1:{port}")
+	print("=" * 65, flush=True)
+	print("🏆 潘翼芃 潘一柠任务小分队系统 (Task Force Hub) 已就绪启动", flush=True)
+	print(f"📍 本地访问地址: http://localhost:{port}", flush=True)
+	print(f"📍 本地 127 地址: http://127.0.0.1:{port}", flush=True)
 	if extra_ip:
-		print(f"📍 31网段手机/iPad/电脑访问(端口映射入口): http://{extra_ip}:{port} ⭐")
-	print(f"📍 0网段本地直连地址: http://192.168.0.25:{port}")
+		print(f"📍 31网段手机/iPad/电脑访问(端口映射入口): http://{extra_ip}:{port} ⭐", flush=True)
+	print(f"📍 0网段本地直连地址: http://192.168.0.25:{port}", flush=True)
 	if local_ips:
 		for ip in local_ips:
 			if ip not in ["192.168.0.25", extra_ip]:
-				print(f"📍 其它网卡 IP: http://{ip}:{port}")
-	print("=" * 65)
+				print(f"📍 局域网网卡 IP: http://{ip}:{port}", flush=True)
+	print("=" * 65, flush=True)
 	app.run(host=host, port=port, debug=False, threaded=True)
