@@ -2886,39 +2886,129 @@
         }
     }
 
-    function getBoardPuzzleForTemplate(t) {
-        if (!t) return null;
-        if (t.board_puzzle) return t.board_puzzle;
-
-        if (globalWeiqiCurriculumStages && globalWeiqiCurriculumStages.length > 0) {
-            for (const stage of globalWeiqiCurriculumStages) {
-                const modules = stage.modules || [];
-                for (const mod of modules) {
-                    const tpls = mod.templates || [];
-                    for (const item of tpls) {
-                        const match = (
-                            (t.code && item.code && t.code === item.code) ||
-                            (t.name && item.name && (t.name.includes(item.name) || item.name.includes(t.name)))
-                        );
-                        if (match && item.board_puzzle) {
-                            return item.board_puzzle;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Default fallback puzzle if none matched
-        return {
+    // Complete 35-Puzzle Database: Every Weiqi template has its own distinct, authentic Go board puzzle!
+    const WEIQI_PUZZLE_DATABASE = {
+        // --- 初级阶段 (12 题 · 9路棋盘) ---
+        "1-1": {
+            board_size: 9,
+            black_stones: ["E5", "E1", "A1"],
+            white_stones: ["E6", "D5", "D1", "A2"],
+            target_player: "black",
+            mission: "认识棋盘与气数对比",
+            question: "观察棋盘上天元(E5)、边上(E1)和角上(A1)的三颗黑子，数出它们各自有几气？",
+            solution_coord: "F5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "F5", "note": "天元黑子原本有 4 气，被白占领 2 气后还剩 2 气；边上黑子原本有 3 气，角上黑子原本有 2 气！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (基础气数)", "content": "中间的子向四周有 4 条线(4气)，边上的子有 3 条线(3气)，角上的子只有 2 条线(2气)。"},
+                {"level": 2, "title": "🔍 提示 2 (被占气的计算)", "content": "如果相邻线上有白子，那条线的气就被堵住了。"},
+                {"level": 3, "title": "🎯 提示 3 (答案)", "content": "中间E5剩2气，边E1剩2气，角A1剩1气！"}
+            ],
+            explanation: "【棋子气数法则】：中间 4 气、边上 3 气、角上 2 气。角上的子最容易被吃，也最容易借角部做眼！"
+        },
+        "1-2": {
+            board_size: 9,
+            black_stones: ["A2", "B1", "E3", "D2", "F2"],
+            white_stones: ["E2"],
+            target_player: "black",
+            mission: "提子与禁着点识别",
+            question: "黑棋下在哪里能提掉白子 E2？另外请指出角上 A1 为什么是白棋的禁着点！",
+            solution_coord: "E1",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E1", "note": "黑1下在 E1，彻底收紧白 E2 最后一口气，成功提子！A1 是白棋禁着点（白下进去自己没气且不能提子）。"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (找最后一口气)", "content": "白子 E2 的上下左右四条线中，哪一条还是空的？"},
+                {"level": 2, "title": "🔍 提示 2 (禁着点定义)", "content": "下进去自己没有气，且不能提掉对方棋子的点，就是禁着点！"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑棋下在 E1 即可提掉白子！"}
+            ],
+            explanation: "【提子与禁着点】：收尽对方最后一口气即可提子。如果下进去自己没气又不能提子，就是禁着点！"
+        },
+        "1-3": {
+            board_size: 9,
+            black_stones: ["C4", "D5", "D3", "F4"],
+            white_stones: ["D4", "E5", "E3", "C5"],
+            target_player: "black",
+            mission: "打劫形状与找劫材",
+            question: "黑棋第一手能提掉 D4 的白子吗？提掉之后白棋能立刻提回吗？",
+            solution_coord: "E4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E4", "note": "黑1走 E4 提掉白 D4！白棋不能立即提回，必须先在别处找劫材！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (打劫核心)", "content": "黑下 E4 可以提掉白 D4，形成互相叫吃的打劫形。"},
+                {"level": 2, "title": "🔍 提示 2 (不能立刻提回)", "content": "为了防止无限循环，白棋必须在别处走一手（找劫材），黑棋应了之后白棋才能提回！"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑1下 E4 提劫！"}
+            ],
+            explanation: "【打劫规则】：打劫不能马上提回，必须先在别处找劫材。打劫是围棋中最刺激的争夺！"
+        },
+        "2-1": {
+            board_size: 9,
+            black_stones: ["C4", "E4", "C6", "E6"],
+            white_stones: ["D4", "D6"],
+            target_player: "black",
+            mission: "双叫吃手筋 · 一子两打",
+            question: "黑棋该下在哪个交叉点，能同时叫吃上下两颗白子？",
+            solution_coord: "D5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "D5", "note": "黑1下在 D5！同时叫吃白 D4 和白 D6，白棋顾此失彼必被吃一个！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (寻找共同弱点)", "content": "找到两颗白子之间共享的关键气点。"},
+                {"level": 2, "title": "🔍 提示 2 (一子两打)", "content": "黑下在两颗白子的正中间，同时打吃两个方向。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解是 D5！"}
+            ],
+            explanation: "【双叫吃手筋】：一步棋同时叫吃两块敌棋，对方救左则死右，救右则死左！"
+        },
+        "2-2": {
+            board_size: 9,
+            black_stones: ["C3", "D2", "E3", "D4"],
+            white_stones: ["D3", "E4"],
+            target_player: "black",
+            mission: "征子手筋（羊角折）",
+            question: "黑棋如何一步步曲折打吃，把白子一路追逼到棋盘边线？",
+            solution_coord: "F4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "F4", "note": "黑1从斜上方打吃！逼白棋往没有接应的方向逃跑"},
+                {"move": 2, "color": "white", "coord": "F5", "note": "白2长出逃跑"},
+                {"move": 3, "color": "black", "coord": "E5", "note": "黑3继续压住打吃，形成阶梯状征子！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (像楼梯一样)", "content": "打吃的方向要逼迫对方走斜线，像走楼梯一样一左一右！"},
+                {"level": 2, "title": "🔍 提示 2 (看前方有没有接应)", "content": "征子路线上如果有黑子叫征子有利，如果有白子叫引征。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一步下在 F4 打吃！"}
+            ],
+            explanation: "【征子手筋】：像楼梯一样连续打吃，对方气始终只有 1 气，一路追到边线直接提光！"
+        },
+        "2-3": {
+            board_size: 9,
+            black_stones: ["C3", "E3", "C5", "E5"],
+            white_stones: ["D3", "D4"],
+            target_player: "black",
+            mission: "枷吃手筋（天罗地网）",
+            question: "黑棋不用紧贴着白棋打吃，该下在何处从虚处织网罩住白棋？",
+            solution_coord: "D5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "D5", "note": "黑1从上方虚罩！织起天罗地网，白棋无论怎么冲都是撞气自杀！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (不用贴身)", "content": "枷吃不需要贴着白棋走，而是像帽子一样扣住白棋的前方！"},
+                {"level": 2, "title": "🔍 提示 2 (封锁出头)", "content": "封锁白棋往开阔处逃跑的路线。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手走 D5 罩住！"}
+            ],
+            explanation: "【枷吃手筋】：比征子更稳健的高级吃子法，从虚处织网，不给对方引征逃脱的机会。"
+        },
+        "2-4": {
             board_size: 9,
             black_stones: ["C3", "C4", "C5", "D3", "E3", "F3", "F4", "F5"],
             white_stones: ["D4", "E4", "D5"],
             target_player: "black",
-            mission: "黑先吃白 · 倒扑手筋",
+            mission: "倒扑手筋（送子入虎口）",
             question: "黑棋该下在哪个位置，能巧妙倒扑提掉白棋整块？",
             solution_coord: "E5",
             solution_steps: [
-                {"move": 1, "color": "black", "coord": "E5", "note": "黑1扑入虎口！白三子处于被提边缘"},
+                {"move": 1, "color": "black", "coord": "E5", "note": "黑1扑入虎口！白三子瞬间处于被提边缘"},
                 {"move": 2, "color": "white", "coord": "E5", "note": "白2提掉黑1子，但自身只剩最后1气！"},
                 {"move": 3, "color": "black", "coord": "E5", "note": "黑3再次落子，直接倒扑全提白棋！"}
             ],
@@ -2928,7 +3018,585 @@
                 {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手黑棋走 E5！白提掉后白棋只剩 1 气，黑再下一手 E5 即可全部提回！"}
             ],
             explanation: "【倒扑妙手分析】：先弃一子送入对方口中，破坏对方眼形并紧住对方最后的气，下一步直接全提！"
-        };
+        },
+        "3-1": {
+            board_size: 9,
+            black_stones: ["A5", "B5", "C5", "D5", "E5", "E4", "E3", "E2", "E1"],
+            white_stones: ["A6", "B6", "C6", "D6", "F4", "F3", "F2", "F1"],
+            target_player: "black",
+            mission: "数子法地盘划分入门",
+            question: "分界线已经划清：黑棋占领左下角区域，白棋占领右上角区域。请数一数黑棋围住了多少交叉点？",
+            solution_coord: "C3",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "C3", "note": "黑棋围住左下角 4x4 区域共 20 目实地！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (数内部交叉点)", "content": "数一数黑棋实线内完全属于黑棋的空位点。"},
+                {"level": 2, "title": "🔍 提示 2 (行列相乘)", "content": "左下角 4 行 5 列，减去边界点。"},
+                {"level": 3, "title": "🎯 提示 3 (目数)", "content": "黑棋占领 20 目，白棋占领 18 目！"}
+            ],
+            explanation: "【数子法】：围棋的胜负看谁围的地盘多。终局时数双方活棋围住的交叉点目数。"
+        },
+        "3-2": {
+            board_size: 9,
+            black_stones: ["B2", "C2", "D2", "B3", "C3", "D3", "B4", "C4", "D4"],
+            white_stones: ["F6", "G6", "H6", "F7", "G7", "H7", "F8", "G8", "H8"],
+            target_player: "black",
+            mission: "终局胜负计算与贴目",
+            question: "双方各自围成 9 颗子的实地阵地，黑先下抢占中腹大官子，判断最终胜负差距！",
+            solution_coord: "E5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E5", "note": "黑抢占天元 E5 大官子要点，黑棋以 2.5 目优势获胜！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (对比大小)", "content": "两边阵地一样大，胜负取决于中腹大官子！"},
+                {"level": 2, "title": "🔍 提示 2 (天元中心)", "content": "占领中间空位最大的一点。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑棋抢占 E5 天元！"}
+            ],
+            explanation: "【判断胜负】：双方地盘相近时，谁先抢占中腹大官子谁就能锁定胜局！"
+        },
+        "4-1": {
+            board_size: 9,
+            black_stones: ["C3", "G3", "E5", "C7", "D4", "E4"],
+            white_stones: ["G7", "D7", "F5", "C5", "D6"],
+            target_player: "black",
+            mission: "9路实战完整对弈中盘",
+            question: "实战中盘阶段，黑棋中腹外势强大，该走哪一步彻底切断白棋两块孤棋？",
+            solution_coord: "E6",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E6", "note": "黑1切断！白棋上下两块无法连络，黑棋确立胜势！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (找分断点)", "content": "找到白棋 D6 和 F5 之间的断点。"},
+                {"level": 2, "title": "🔍 提示 2 (冲断)", "content": "走在 E6 处强行分断白棋。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑走 E6 分断！"}
+            ],
+            explanation: "【中盘切断】：切断对方的连络是进攻的最好方法。分成两块孤棋后对方很难同时做活。"
+        },
+        "4-2": {
+            board_size: 9,
+            black_stones: ["D4", "D5", "E6", "F5", "F4"],
+            white_stones: ["E4", "E5"],
+            target_player: "black",
+            mission: "吃子小游戏 · 关门打狗",
+            question: "白棋两子被黑棋包围，黑棋从哪个方向收气能一口吃掉白棋？",
+            solution_coord: "E3",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E3", "note": "黑1从下边打吃！白棋向上逃跑无门，直接被提！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (往自己厚势赶)", "content": "把对方往自己的包围圈里面赶，不要往开阔处赶！"},
+                {"level": 2, "title": "🔍 提示 2 (封住下路)", "content": "下在 E3 关住门。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑1走 E3 打吃！"}
+            ],
+            explanation: "【关门打吃】：吃子口诀：“往自己怀里赶，往棋盘边线赶，往死路赶”！"
+        },
+        "4-3": {
+            board_size: 9,
+            black_stones: ["C3", "G3", "C7", "G7", "E5", "D4", "F6"],
+            white_stones: ["D3", "F3", "D7", "F7", "E4", "E6"],
+            target_player: "black",
+            mission: "初级阶段毕业对弈全局",
+            question: "兄妹 9 路盘决战时刻！黑棋该如何抢先收官锁定胜局？",
+            solution_coord: "D5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "D5", "note": "黑1占领中央交叉点，全盘联络，顺利通关初级阶段！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (全局联络)", "content": "连接自己的两块厚势，同时压缩白棋目数。"},
+                {"level": 2, "title": "🔍 提示 2 (中心要害)", "content": "占领 D5 关键枢纽。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 D5 锁定全盘胜利！"}
+            ],
+            explanation: "【初级总结】：恭喜妹妹掌握了吃子、做眼、死活与9路实战，顺利晋级中级阶段！🎉"
+        },
+
+        // --- 中级阶段 (12 题 · 死活攻防与13路) ---
+        "中级1-1": {
+            board_size: 9,
+            black_stones: ["B3", "C3", "D3", "B5", "C5", "D5", "A4", "E4"],
+            white_stones: ["A3", "A5", "E3", "E5", "B2", "C2", "D2", "B6", "C6", "D6"],
+            target_player: "black",
+            mission: "直三与弯三做活急所",
+            question: "黑棋内部形成了直三眼形(B4, C4, D4)，黑先下哪一点能变成两只真眼？",
+            solution_coord: "C4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "C4", "note": "黑1抢占直三核心要害 C4！分成左右两个真眼，活棋！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (敌之要点即我之要点)", "content": "如果白棋占了中点黑就死，所以黑棋必须抢先占领！"},
+                {"level": 2, "title": "🔍 提示 2 (对称中心)", "content": "3 个点的正中间那一点！"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解是 C4！"}
+            ],
+            explanation: "【直三死活】：直三、弯三要点都在中间！谁先占到中点，黑先则活，白先点中则死！"
+        },
+        "中级1-2": {
+            board_size: 9,
+            black_stones: ["B2", "C2", "D2", "E2", "B4", "C4", "D4", "E4", "A3", "F3"],
+            white_stones: ["A2", "F2", "A4", "F4", "B1", "C1", "D1", "E1", "B5", "C5", "D5", "E5"],
+            target_player: "black",
+            mission: "直四与弯四死活分析",
+            question: "黑棋内部是直四眼形(B3, C3, D3, E3)，请分析白棋能否点杀黑棋？",
+            solution_coord: "C3",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "C3", "note": "直四本身是活棋！白点C3黑应D3成两眼，白点D3黑应C3成两眼！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (直四本身是活棋)", "content": "直四有两个对称做眼点，对方点一个，你占另一个就能做活！"},
+                {"level": 2, "title": "🔍 提示 2 (不用补手)", "content": "直四是活形，不需要急着补棋。"},
+                {"level": 3, "title": "🎯 提示 3 (要点)", "content": "C3 与 D3 互为见合点！"}
+            ],
+            explanation: "【直四死活】：直四是天然活棋，具有两个见合要点，对方点杀不了。"
+        },
+        "中级1-3": {
+            board_size: 9,
+            black_stones: ["B3", "C2", "D2", "E3", "D4", "C4"],
+            white_stones: ["A3", "B2", "C1", "D1", "E2", "F3", "E4", "D5", "C5", "B4"],
+            target_player: "white",
+            mission: "方四与丁四死活点杀",
+            question: "黑棋内部形成了丁四眼形(C3, D3, C2, D2)，白棋点在哪个要点能让黑棋无法做活？",
+            solution_coord: "D3",
+            solution_steps: [
+                {"move": 1, "color": "white", "coord": "D3", "note": "白1点入丁四核心要害！黑棋无法分出两眼，全灭！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (丁字中心)", "content": "找到四个点中最核心的交汇点。"},
+                {"level": 2, "title": "🔍 提示 2 (破坏两眼)", "content": "占领中心后黑棋无法做出两只眼。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "白先点在 D3 处！"}
+            ],
+            explanation: "【丁四死活】：丁四形如“丁”字，中心点就是死活命门，谁抢到谁赢！"
+        },
+        "中级1-4": {
+            board_size: 9,
+            black_stones: ["B2", "C2", "D2", "D3", "C4", "B4", "A3"],
+            white_stones: ["A2", "B1", "C1", "D1", "E2", "E3", "E4", "D5", "C5", "B5", "A4"],
+            target_player: "white",
+            mission: "刀把五死活要害点杀",
+            question: "黑棋内部是刀把五眼形，白先下在何处能一击必杀？",
+            solution_coord: "C3",
+            solution_steps: [
+                {"move": 1, "color": "white", "coord": "C3", "note": "白1点在刀把五的刀把核心 C3！黑必死！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (刀柄连接处)", "content": "刀把五由四个方形加一个突出手柄组成，要害在刀柄连接处！"},
+                {"level": 2, "title": "🔍 提示 2 (关键眼位)", "content": "下在 C3 处破坏眼位。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "白先走 C3！"}
+            ],
+            explanation: "【刀把五死活】：刀把五是五子大眼的难点，形似菜刀把手，要害在刀把关键拐角处！"
+        },
+        "中级2-1": {
+            board_size: 9,
+            black_stones: ["B4", "C3", "D4", "C5"],
+            white_stones: ["B3", "D3"],
+            target_player: "black",
+            mission: "真眼与假眼识别补强",
+            question: "C4 是一个眼位，但角上 B3、D3 有白子在虎视眈眈，黑棋该走哪一步彻底变成真眼？",
+            solution_coord: "C2",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "C2", "note": "黑1接住保护角部，彻底消除假眼隐患！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (看斜角)", "content": "中间眼位看四个斜角，有两个斜角被白棋占领就是假眼！"},
+                {"level": 2, "title": "🔍 提示 2 (粘接补断)", "content": "在下方弱点处补一手粘接。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "下在 C2 牢牢接住！"}
+            ],
+            explanation: "【真假眼口诀】：中腹眼看四角，角有两白即为假；边上眼看两角，角有一白即为假！"
+        },
+        "中级2-2": {
+            board_size: 9,
+            black_stones: ["C3", "C4", "D5", "E5", "F4", "F3"],
+            white_stones: ["B3", "B4", "B5", "C6", "D6", "E6", "F6", "G5", "G4", "G3"],
+            target_player: "black",
+            mission: "做眼方法 · 扩大眼位与分眼",
+            question: "黑棋被包围，黑先走哪一步能确保做出两只真眼做活？",
+            solution_coord: "D4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "D4", "note": "黑1做眼！分出 D3 和 E4 两个独立真眼，完美做活！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (一子分两眼)", "content": "找到能把大空间分成两个独立小眼睛的要点。"},
+                {"level": 2, "title": "🔍 提示 2 (中心分界)", "content": "下在 D4 分界线。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 D4 成功做活！"}
+            ],
+            explanation: "【做眼方法】：做眼两大法宝：“扩大眼位”与“抢占分眼急所”。"
+        },
+        "中级2-3": {
+            board_size: 9,
+            black_stones: ["B3", "B4", "C5", "D5", "E4", "E3"],
+            white_stones: ["A3", "A4", "B5", "C6", "D6", "E5", "F4", "F3", "C2", "D2"],
+            target_player: "white",
+            mission: "破眼方法 · 缩小眼位与点眼",
+            question: "白先如何破掉黑棋眼位，让黑棋变成一只死眼？",
+            solution_coord: "D4",
+            solution_steps: [
+                {"move": 1, "color": "white", "coord": "D4", "note": "白1尖入破眼！抢占黑棋做眼要害，黑棋只有一只假眼，必死！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (破坏分眼)", "content": "抢先占领黑棋想做两眼的那个关键点！"},
+                {"level": 2, "title": "🔍 提示 2 (尖入)", "content": "白棋尖入 D4。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "白先下 D4！"}
+            ],
+            explanation: "【破眼技巧】：破眼两大手段：“缩小眼位（扳/挡）”与“点入要害（点/扑）”。"
+        },
+        "中级3-1": {
+            board_size: 9,
+            black_stones: ["C3", "D3", "E3"],
+            white_stones: ["C4", "D4", "E4"],
+            target_player: "black",
+            mission: "对杀数气与公气外气",
+            question: "黑白三子贴身对杀，黑先该如何数气并紧逼白棋？",
+            solution_coord: "D2",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "D2", "note": "黑1从外气紧逼，快一气吃掉白棋！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (数外气)", "content": "先数黑棋有几口外气，白棋有几口外气。"},
+                {"level": 2, "title": "🔍 提示 2 (先收外气)", "content": "对杀基本原则：先收外气，后收公气。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑走 D2 紧气！"}
+            ],
+            explanation: "【对杀数气法则】：对杀口诀：“先收外气、后收公气；快一气则胜，慢一气则败”。"
+        },
+        "中级3-2": {
+            board_size: 9,
+            black_stones: ["A2", "B1", "C1", "C2", "B3", "A4"],
+            white_stones: ["A1", "D1", "D2", "D3", "C4", "B4"],
+            target_player: "black",
+            mission: "有眼杀无眼实战对杀",
+            question: "黑棋在角部有一只真眼，白棋没有眼。黑棋该如何紧气？",
+            solution_coord: "D1",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "D1", "note": "黑1从外气紧逼白棋！公气属于有眼的一方，白棋无法入气，黑胜！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (公气归有眼)", "content": "记住围棋铁律：“有眼杀无眼，公气归有眼者所有”！"},
+                {"level": 2, "title": "🔍 提示 2 (收外气)", "content": "黑棋不要急着填公气，从白棋的外气收起！"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手黑走 D1 收外气！"}
+            ],
+            explanation: "【有眼杀无眼】：只要有一只真眼，中间的公共气就全归你！对方必须先填外气才能入眼，所以有眼方胜率极大！"
+        },
+        "中级4-1": {
+            board_size: 13,
+            black_stones: ["D4", "K4", "D10", "K10", "G7", "E5", "H8"],
+            white_stones: ["D7", "J7", "G4", "G10", "F6", "H6"],
+            target_player: "black",
+            mission: "13路完整对弈与角部守角",
+            question: "13 路实战中盘阶段，黑棋占领四个角星位，白棋逼近，黑棋该如何守住右下角？",
+            solution_coord: "J4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "J4", "note": "黑1小飞守角，巩固右下角实地，兼顾全局厚势！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (守角为大)", "content": "角部价值最大，先巩固角部实地。"},
+                {"level": 2, "title": "🔍 提示 2 (小飞守角)", "content": "走在 J4 形成完美守角。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑走 J4 守角！"}
+            ],
+            explanation: "【13路实战大局观】：从 9 路过渡到 13 路，要开始注重占角与守角的效率配合。"
+        },
+        "中级4-2": {
+            board_size: 9,
+            black_stones: ["A2", "B2", "C2", "D2", "D3", "C4", "B4", "A3"],
+            white_stones: ["A1", "B1", "C1", "E2", "E3", "D4", "C5", "B5", "A4"],
+            target_player: "black",
+            mission: "角部胀牯牛手筋专项复盘",
+            question: "角部特殊死活题：黑棋如何利用白棋气紧，施展“胀牯牛”妙手绝处逢生？",
+            solution_coord: "B3",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "B3", "note": "黑1胀牯牛妙手！白棋气紧不敢提，黑棋成功做活！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (角部特殊性)", "content": "利用角部两边无法入气的气紧弱点。"},
+                {"level": 2, "title": "🔍 提示 2 (做成胀牯牛)", "content": "下在 B3 撑大眼形。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑走 B3 妙手！"}
+            ],
+            explanation: "【胀牯牛手筋】：角部特有的绝妙手筋，像吹胀的牛肚子一样让对方吃不掉！"
+        },
+        "中级4-3": {
+            board_size: 13,
+            black_stones: ["D4", "K4", "D10", "G7", "E8", "F5"],
+            white_stones: ["K10", "F4", "H4", "D8", "J8"],
+            target_player: "black",
+            mission: "中级进阶毕业对弈全局",
+            question: "中级对弈冲刺！黑棋该如何切断白棋中央连接，确立胜局？",
+            solution_coord: "G5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "G5", "note": "黑1跨断！白棋上下脱节，黑棋锁定全盘大胜，晋级高级阶段！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (中央跨断)", "content": "下在白棋两子腰部将其强行分断。"},
+                {"level": 2, "title": "🔍 提示 2 (要害分断)", "content": "走在 G5 处。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 G5 锁定胜利！"}
+            ],
+            explanation: "【中级总结】：恭喜掌握了死活要点与13路全局对杀，正式迈入19路高级大局观阶段！🏆"
+        },
+
+        // --- 高级阶段 (11 题 · 19路/13路 大局观与定式) ---
+        "高级1-1": {
+            board_size: 19,
+            black_stones: ["D4", "Q4", "D16", "K10"],
+            white_stones: ["Q16", "K4", "D10", "Q10"],
+            target_player: "black",
+            mission: "金角银边草肚皮 · 布局选点",
+            question: "19 路全局开局阶段，黑棋占领三角，白占一角三边。黑棋下一手该向哪里拆边发展？",
+            solution_coord: "K16",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "K16", "note": "黑1占领上边星位 K16！开拆大模样，金角银边效率最高！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (角边配合)", "content": "先占角、次拆边、后占中腹。"},
+                {"level": 2, "title": "🔍 提示 2 (上边大场)", "content": "占领上边正中央的星位 K16。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 K16 抢占全盘最大场！"}
+            ],
+            explanation: "【金角银边口诀】：角最容易围地（效率最高），边次之，中腹最难围地。开局一定要先占四个角和宽边！"
+        },
+        "高级1-2": {
+            board_size: 19,
+            black_stones: ["D4", "D10"],
+            white_stones: ["F3"],
+            target_player: "black",
+            mission: "星位小飞挂角与小飞守角",
+            question: "白棋走 F3 小飞挂黑角，黑棋该走哪一步标准小飞守角？",
+            solution_coord: "F4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "F4", "note": "黑1小飞守角！取角地并稳健防御，标准定式正解！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (小飞守角)", "content": "从星位向斜下方走小飞步。"},
+                {"level": 2, "title": "🔍 提示 2 (三四路配合)", "content": "走在 F4 形成经典坚固守角。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 F4 守角！"}
+            ],
+            explanation: "【星位小飞挂与守角】：星位易被点三三，小飞守角能迅速将角地转化为坚固实地。"
+        },
+        "高级1-3": {
+            board_size: 19,
+            black_stones: ["D4", "D10", "D16"],
+            white_stones: ["Q16", "Q4", "K4"],
+            target_player: "black",
+            mission: "三连星大模样布局实战",
+            question: "黑棋筑起经典“三连星”大模样阵势，下一手该向哪个方向张开大网？",
+            solution_coord: "K10",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "K10", "note": "黑1落子天元 K10！呼应左边三连星，筑起宇宙流大模样！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (天元呼应)", "content": "三连星配合天元能形成震撼的宇宙流大模样！"},
+                {"level": 2, "title": "🔍 提示 2 (中央天元)", "content": "走在最正中心 K10。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 K10 天元！"}
+            ],
+            explanation: "【三连星大模样】：宇宙流武宫正树的招牌开局，重在中央大模样发展，极具观赏性与气势！"
+        },
+        "高级2-1": {
+            board_size: 19,
+            black_stones: ["D4", "F4", "D6", "F6"],
+            white_stones: ["E4", "E6"],
+            target_player: "black",
+            mission: "基本连接 · 双连接与虎口连接",
+            question: "黑棋四颗子中间有两个断点，黑棋走哪一步能实现完美的“双连接”？",
+            solution_coord: "E5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E5", "note": "黑1走 E5 双连接！一子同时连接上下左右四子，固若金汤！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (一子双连)", "content": "找到四颗黑子交叉的中心点。"},
+                {"level": 2, "title": "🔍 提示 2 (中心要害)", "content": "走在 E5。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "下在 E5 彻底连通！"}
+            ],
+            explanation: "【双连接】：在两个断点的交叉处下一子，同时补好两个断点，效率最高！"
+        },
+        "高级2-2": {
+            board_size: 19,
+            black_stones: ["D4", "F4"],
+            white_stones: ["E3", "E5"],
+            target_player: "black",
+            mission: "分断技巧 · 跨断与穿象眼",
+            question: "白棋走小尖试图连络，黑棋该走哪一步强行“跨断”？",
+            solution_coord: "E4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E4", "note": "黑1跨断！白棋上下被强行切开成两块，必须分头应战！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (跨断要点)", "content": "下在白棋两子斜角连接的腰部。"},
+                {"level": 2, "title": "🔍 提示 2 (直接切断)", "content": "走在 E4 处。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑走 E4 跨断！"}
+            ],
+            explanation: "【跨断技巧】：切断对方斜向连络的经典手筋，将对方阵形一分为二。"
+        },
+        "高级2-3": {
+            board_size: 19,
+            black_stones: ["C4", "D5", "F5", "G4"],
+            white_stones: ["D4", "E5", "F4"],
+            target_player: "black",
+            mission: "连接与分断综合实战",
+            question: "实战攻防焦点：黑棋如何运用“夹断”手筋彻底撕开白棋防线？",
+            solution_coord: "E4",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E4", "note": "黑1夹断！两边白子无法兼顾，黑棋大获全胜！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (两子夹击)", "content": "从白棋下方缝隙夹入。"},
+                {"level": 2, "title": "🔍 提示 2 (关键要穴)", "content": "下在 E4 处。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 E4 夹断！"}
+            ],
+            explanation: "【夹断手筋】：在敌子两侧有己方坚固棋子时，中间一夹如利刃切入，敌棋必断！"
+        },
+        "高级3-1": {
+            board_size: 19,
+            black_stones: ["B2", "C2", "D2", "E2"],
+            white_stones: ["B3", "C3", "D3", "E3"],
+            target_player: "black",
+            mission: "先手与后手 · 先手一目大如天",
+            question: "官子阶段，黑先走二路扳粘，能保持先手权利。黑棋第一手该走哪里？",
+            solution_coord: "A2",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "A2", "note": "黑1二路下扳！白必须挡(A3)，黑接(B1)，白再补(A4)，黑棋先手搜刮 3 目！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (二路扳粘)", "content": "在棋盘二路边缘向一路扳。"},
+                {"level": 2, "title": "🔍 提示 2 (逼对方后手应答)", "content": "走在 A2。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 A2 扳！"}
+            ],
+            explanation: "【先手官子】：围棋名言“先手一目大如天”。保持先手能连续抢占全盘大官子！"
+        },
+        "高级3-2": {
+            board_size: 19,
+            black_stones: ["B2", "C2", "D2", "B4", "C4", "D4"],
+            white_stones: ["F2", "G2", "H2", "F4", "G4", "H4"],
+            target_player: "black",
+            mission: "简单目数计算与官子出入",
+            question: "计算黑白两块实地的价值出入，黑走中腹大官子，抢占最高价值点！",
+            solution_coord: "E3",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E3", "note": "黑1挺进 E3！自身长 2 目，破白 2 目，出入价值 4 目！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (出入计算)", "content": "自己增加的目数 + 破坏对方减少的目数 = 出入价值。"},
+                {"level": 2, "title": "🔍 提示 2 (两边交界)", "content": "下在两军交界 E3。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 E3 抢占 4 目出入！"}
+            ],
+            explanation: "【官子出入法】：官子价值 = 我方增加目数 + 对方减少目数。学会算账才能下好官子！"
+        },
+        "高级4-1": {
+            board_size: 19,
+            black_stones: ["D4", "Q4", "D16", "K10", "F3", "R6"],
+            white_stones: ["Q16", "K4", "C6", "R14", "P17"],
+            target_player: "black",
+            mission: "19路全局让子棋对弈",
+            question: "哥哥（执白）与妹妹（执黑让4子）19路大决战！黑棋如何利用角部厚势向中腹挺进？",
+            solution_coord: "K7",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "K7", "note": "黑1向中腹跳出！全盘厚势联通，牢牢守住让子棋优势！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (让子棋要厚)", "content": "让子棋秘诀：不贪小利，自身走厚，自然获胜！"},
+                {"level": 2, "title": "🔍 提示 2 (向中腹出头)", "content": "下在 K7 挺进中腹。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 K7 出头！"}
+            ],
+            explanation: "【让子棋心法】：让子棋黑棋只要走厚自身不留孤棋，白棋就无机可乘。"
+        },
+        "高级4-2": {
+            board_size: 19,
+            black_stones: ["D4", "Q4", "D16", "K10", "E5", "O5"],
+            white_stones: ["Q16", "K4", "F5", "N5"],
+            target_player: "black",
+            mission: "胜负手关键复盘推演",
+            question: "复盘推演：如果黑棋当初不走小贪而选择走中央大场，局面将如何？",
+            solution_coord: "K12",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "K12", "note": "黑1镇头！威慑白棋全盘，复盘验证这是最佳正解！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (复盘思考)", "content": "从更高的大局观角度审视中央大场。"},
+                {"level": 2, "title": "🔍 提示 2 (高位镇头)", "content": "走在 K12 居高临下。"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "下在 K12 镇头！"}
+            ],
+            explanation: "【复盘的力量】：复盘是围棋进步最快的法宝。找到失误点并推演出正解，棋力突飞猛进！"
+        },
+        "高级4-3": {
+            board_size: 19,
+            black_stones: ["D4", "Q4", "D16", "Q16", "K10", "K4", "D10", "Q10", "K16"],
+            white_stones: ["E5", "P5", "E15", "P15", "G7", "N7", "G13", "N13"],
+            target_player: "black",
+            mission: "兄妹围棋教学巅峰毕业大对弈",
+            question: "兄妹围棋体系最终毕业战！黑棋四通八达，抢先完成最后一盘 19 路对弈与数子！",
+            solution_coord: "K10",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "K10", "note": "黑棋完美成阵，兄妹圆满完成全部 35 课围棋进阶体系！🎉"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (巅峰见证)", "content": "哥哥小老师教学有方，妹妹小能手棋艺精湛！"},
+                {"level": 2, "title": "🔍 提示 2 (九星辉映)", "content": "九星全部点亮。"},
+                {"level": 3, "title": "🎯 提示 3 (庆祝)", "content": "恭喜兄妹通关全部围棋课程！"}
+            ],
+            explanation: "【毕业寄语】：从数气、吃子、死活，到 19 路完整对弈与复盘，兄妹俩在围棋世界里共同成长，收获智慧与友爱！🌟"
+        }
+    };
+
+    function getBoardPuzzleForTemplate(t) {
+        if (!t) return null;
+        if (t.board_puzzle) return t.board_puzzle;
+
+        const tName = t.name || '';
+        const tCode = t.code || '';
+
+        // 1. Direct code lookup (e.g. "1-1", "2-4", "中级1-3", "高级2-1")
+        for (const [codeKey, puzzle] of Object.entries(WEIQI_PUZZLE_DATABASE)) {
+            if (tCode === codeKey || tName.includes(codeKey)) {
+                return puzzle;
+            }
+        }
+
+        // 2. Keyword-based matching
+        if (tName.includes('认识棋盘') || tName.includes('气')) return WEIQI_PUZZLE_DATABASE["1-1"];
+        if (tName.includes('提子') || tName.includes('禁着点')) return WEIQI_PUZZLE_DATABASE["1-2"];
+        if (tName.includes('打劫')) return WEIQI_PUZZLE_DATABASE["1-3"];
+        if (tName.includes('双叫吃')) return WEIQI_PUZZLE_DATABASE["2-1"];
+        if (tName.includes('征子')) return WEIQI_PUZZLE_DATABASE["2-2"];
+        if (tName.includes('枷吃')) return WEIQI_PUZZLE_DATABASE["2-3"];
+        if (tName.includes('倒扑')) return WEIQI_PUZZLE_DATABASE["2-4"];
+        if (tName.includes('数子法') || (tName.includes('数子') && tName.includes('初级'))) return WEIQI_PUZZLE_DATABASE["3-1"];
+        if (tName.includes('判断胜负')) return WEIQI_PUZZLE_DATABASE["3-2"];
+        if (tName.includes('完整下完一盘')) return WEIQI_PUZZLE_DATABASE["4-1"];
+        if (tName.includes('吃子小游戏')) return WEIQI_PUZZLE_DATABASE["4-2"];
+        if (tName.includes('初级') && tName.includes('阶段性对弈')) return WEIQI_PUZZLE_DATABASE["4-3"];
+
+        if (tName.includes('直三') || tName.includes('弯三')) return WEIQI_PUZZLE_DATABASE["中级1-1"];
+        if (tName.includes('直四') || tName.includes('弯四')) return WEIQI_PUZZLE_DATABASE["中级1-2"];
+        if (tName.includes('方四') || tName.includes('丁四')) return WEIQI_PUZZLE_DATABASE["中级1-3"];
+        if (tName.includes('死活型综合') || tName.includes('刀把五')) return WEIQI_PUZZLE_DATABASE["中级1-4"];
+        if (tName.includes('真眼') || tName.includes('假眼')) return WEIQI_PUZZLE_DATABASE["中级2-1"];
+        if (tName.includes('做眼')) return WEIQI_PUZZLE_DATABASE["中级2-2"];
+        if (tName.includes('破眼')) return WEIQI_PUZZLE_DATABASE["中级2-3"];
+        if (tName.includes('中级') && tName.includes('数气')) return WEIQI_PUZZLE_DATABASE["中级3-1"];
+        if (tName.includes('对杀基本判断') || tName.includes('有眼杀无眼')) return WEIQI_PUZZLE_DATABASE["中级3-2"];
+        if (tName.includes('13路完整对弈')) return WEIQI_PUZZLE_DATABASE["中级4-1"];
+        if (tName.includes('死活专项复盘') || tName.includes('胀牯牛')) return WEIQI_PUZZLE_DATABASE["中级4-2"];
+        if (tName.includes('中级') && tName.includes('阶段性对弈')) return WEIQI_PUZZLE_DATABASE["中级4-3"];
+
+        if (tName.includes('角→边') || tName.includes('草肚皮')) return WEIQI_PUZZLE_DATABASE["高级1-1"];
+        if (tName.includes('星位') || tName.includes('小飞挂')) return WEIQI_PUZZLE_DATABASE["高级1-2"];
+        if (tName.includes('布局实战') || tName.includes('三连星')) return WEIQI_PUZZLE_DATABASE["高级1-3"];
+        if (tName.includes('基本连接') || tName.includes('双连接')) return WEIQI_PUZZLE_DATABASE["高级2-1"];
+        if (tName.includes('分断技巧') || tName.includes('跨断')) return WEIQI_PUZZLE_DATABASE["高级2-2"];
+        if (tName.includes('连接与分断实战')) return WEIQI_PUZZLE_DATABASE["高级2-3"];
+        if (tName.includes('先手') || tName.includes('后手')) return WEIQI_PUZZLE_DATABASE["高级3-1"];
+        if (tName.includes('目数计算') || tName.includes('官子')) return WEIQI_PUZZLE_DATABASE["高级3-2"];
+        if (tName.includes('完整19路对弈')) return WEIQI_PUZZLE_DATABASE["高级4-1"];
+        if (tName.includes('综合复盘')) return WEIQI_PUZZLE_DATABASE["高级4-2"];
+        if (tName.includes('高级') && (tName.includes('最终对弈') || tName.includes('毕业'))) return WEIQI_PUZZLE_DATABASE["高级4-3"];
+
+        // 3. Match from globalWeiqiCurriculumStages
+        if (globalWeiqiCurriculumStages && globalWeiqiCurriculumStages.length > 0) {
+            for (const stage of globalWeiqiCurriculumStages) {
+                for (const mod of (stage.modules || [])) {
+                    for (const item of (mod.templates || [])) {
+                        if (item.board_puzzle && (tName.includes(item.name) || item.name.includes(tName))) {
+                            return item.board_puzzle;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Return first puzzle if nothing else matched
+        return WEIQI_PUZZLE_DATABASE["1-1"];
     }
 
     // SVG Go Board Visualizer

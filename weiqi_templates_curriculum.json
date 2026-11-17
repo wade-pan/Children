@@ -2,256 +2,173 @@
   "stages": [
     {
       "stage_id": "beginner",
-      "stage_name": "初级阶段：吃子手筋与死活入门",
+      "stage_name": "初级阶段：能下完一盘棋（第 1-2 月）",
       "duration": "第 1-2 月",
-      "goal": "掌握 9 路实战经典手筋，熟练运用倒扑、接不归、金鸡独立等必杀绝招",
-      "core_progress": "从“不会吃子”到“能运用经典手筋吃子做活”",
+      "goal": "从零到“能完整下完一盘 9 路棋，知道怎么算胜负”",
+      "core_progress": "从“不会下”到“能下完”",
       "checklist": [
-        "掌握倒扑、接不归、门吃、枷吃、滚打包收等核心手筋",
-        "能识别真眼与假眼，掌握直三、弯三的死活急所",
-        "9路棋实战能独立下完并正确数子"
+        "掌握气、提子、禁着点、打劫规则",
+        "掌握双叫吃、征子、枷吃、倒扑等吃子手筋",
+        "掌握数子法与终局胜负判断，9路棋能独立下完"
       ],
       "modules": [
         {
           "module_id": 1,
-          "module_name": "经典吃子手筋",
-          "timeline": "第 1-4 周",
+          "module_name": "规则入门",
+          "timeline": "第 1-2 周",
           "templates": [
             {
               "code": "1-1",
-              "name": "♟️ 围棋·初级进阶1-1：倒扑吃子手筋",
+              "name": "♟️ 围棋·初级模板1-1：认识棋盘与气",
               "category": "♟️ 教妹妹围棋",
               "stage": "初级阶段",
-              "module": "经典吃子手筋",
-              "target_goal": "掌握“送子入虎口”倒扑全提对方整块棋的绝招",
+              "module": "规则入门",
+              "target_goal": "知道棋盘长什么样，能数出一颗棋子的气",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 2,
-              "difficulty": 2,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["C3", "C4", "C5", "D3", "E3", "F3", "F4", "F5"],
-                "white_stones": ["D4", "E4", "D5"],
-                "target_player": "black",
-                "mission": "黑先吃白 · 倒扑手筋",
-                "question": "黑棋该下在哪个位置，能巧妙倒扑提掉白棋整块？",
-                "solution_coord": "E5",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "E5", "note": "黑1扑入虎口！白三子瞬间处于被提边缘"},
-                  {"move": 2, "color": "white", "coord": "E5", "note": "白2提掉黑1子，但自身只剩最后1气！"},
-                  {"move": 3, "color": "black", "coord": "E5", "note": "黑3再次落子，直接倒扑全提白棋！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (观察气数)", "content": "仔细看白棋 D4、E4、D5，如果从外面打吃，白棋接上就跑了！"},
-                  {"level": 2, "title": "🔍 提示 2 (虎口扑入)", "content": "勇敢地把一颗黑子送进白棋虎口 E5，故意让对方提掉！"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手黑棋走 E5！白提掉后白棋只剩 1 气，黑再下一手 E5 即可全部提回！"}
-                ],
-                "explanation": "【倒扑妙手分析】：先弃一子送入对方口中，破坏对方眼形并紧住对方最后的气，下一步直接全提！"
-              },
-              "content": "【题目目标】：黑先吃白（倒扑手筋）\n1. 哥哥在 9 路棋盘摆出局面（黑子：C3-C5, D3, E3, F3-F5；白子：D4, E4, D5）。\n2. 引导妹妹观察白棋的气：“如果黑棋送一个子到 E5 虎口，会发生什么？”\n3. 妹妹动手在棋盘上演练 3 步倒扑：黑1扑(E5) ➔ 白2提 ➔ 黑3倒扑全提！\n4. 总结口诀：“送子入虎口，倒扑全拿走！”",
-              "requirements": "【阶段检验】妹妹能独立在棋盘上摆出倒扑并说出步骤。"
+              "difficulty": 1
             },
             {
               "code": "1-2",
-              "name": "♟️ 围棋·初级进阶1-2：接不归手筋",
+              "name": "♟️ 围棋·初级模板1-2：提子与禁着点",
               "category": "♟️ 教妹妹围棋",
               "stage": "初级阶段",
-              "module": "经典吃子手筋",
-              "target_goal": "利用对方气紧，制造连不回去的接不归",
+              "module": "规则入门",
+              "target_goal": "知道什么时候能提子，哪里不能下",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 2,
-              "difficulty": 2,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["B4", "C3", "D3", "E4", "D5", "C6"],
-                "white_stones": ["C4", "D4", "C5"],
-                "target_player": "black",
-                "mission": "黑先吃白 · 接不归手筋",
-                "question": "黑棋该打吃哪一个断点，让白棋连不回去？",
-                "solution_coord": "B5",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "B5", "note": "黑1断打！白棋两子气紧"},
-                  {"move": 2, "color": "white", "coord": "B4", "note": "白棋若试图连接，整块棋依然只有1气"},
-                  {"move": 3, "color": "black", "coord": "B4", "note": "黑棋顺势全提！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (找断点)", "content": "寻找白棋连接处的弱点，从侧面切断并打吃。"},
-                  {"level": 2, "title": "🔍 提示 2 (气紧)", "content": "黑棋打吃后，白棋如果接上，自己的气不仅没增加，反而全部被叫吃！"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手走 B5 断打！"}
-                ],
-                "explanation": "【接不归分析】：对方棋子气紧时，哪怕想接上也会连同接上的棋子一起被叫吃，这就是接不归！"
-              },
-              "content": "【题目目标】：黑先吃白（接不归手筋）\n1. 哥哥摆出棋形，让妹妹找出白棋两个断点。\n2. 讲解“接不归”原理：接上也被吃，不接也被吃。\n3. 妹妹执黑落子 B5 完成断打。\n4. 兄妹对弈演练接不归实战。",
-              "requirements": "【阶段检验】妹妹能看懂“接上也是死棋，不能接”。"
+              "difficulty": 1
             },
             {
               "code": "1-3",
-              "name": "♟️ 围棋·初级进阶1-3：金鸡独立（角部两不入）",
+              "name": "♟️ 围棋·初级模板1-3：打劫",
               "category": "♟️ 教妹妹围棋",
               "stage": "初级阶段",
-              "module": "经典吃子手筋",
-              "target_goal": "掌握利用角部一路由上而下的“立”，让两边白棋都无法打吃",
-              "assignee": "潘翼芃 (指导妹妹)",
-              "reward_flowers": 3,
-              "difficulty": 3,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["A4", "B4", "C4", "C3", "C2", "B1"],
-                "white_stones": ["A3", "B3", "A2", "B2"],
-                "target_player": "black",
-                "mission": "黑先杀白 · 金鸡独立",
-                "question": "黑棋在角部关键一“立”，让白棋左右两边都变成禁着点！",
-                "solution_coord": "A1",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "A1", "note": "黑1一路金鸡独立！神奇的一“立”！"},
-                  {"move": 2, "color": "white", "coord": "pass", "note": "白棋左边不能下(自杀)，右边也不能下(自杀)，两不入！"},
-                  {"move": 3, "color": "black", "coord": "A2", "note": "黑棋下回合提光白棋四子！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (一路妙手)", "content": "注意一路角部的特殊性，利用气紧让对方下不进来！"},
-                  {"level": 2, "title": "🔍 提示 2 (关键一立)", "content": "黑棋下在 A1 位置，像一只金鸡单腿独立！"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解：黑1走 A1！白棋左右都进不来，白死！"}
-                ],
-                "explanation": "【金鸡独立分析】：围棋中最优雅的角部手筋！黑棋在 A1 一立，白棋从 A2 下会自毙，从 B1 下也会自毙，形成绝对的两不入！"
-              },
-              "content": "【题目目标】：黑先杀白（金鸡独立手筋）\n1. 哥哥在角部摆出金鸡独立棋形（白四子被困在角内）。\n2. 提问妹妹：“黑棋下在哪里，可以让白棋左边不敢下、右边也不敢下？”\n3. 妹妹下在 A1，哥哥演示白棋两边自杀的窘境。\n4. 记住天下奇招“金鸡独立”！",
-              "requirements": "【阶段检验】妹妹能准确说出为什么白棋两边都不能下（两不入）。"
-            },
-            {
-              "code": "1-4",
-              "name": "♟️ 围棋·初级进阶1-4：枷吃（天罗地网）",
-              "category": "♟️ 教妹妹围棋",
-              "stage": "初级阶段",
-              "module": "经典吃子手筋",
-              "target_goal": "不用直接贴身紧气，从虚处罩住对方大头鬼",
+              "module": "规则入门",
+              "target_goal": "知道打劫不能马上提回，学会找劫材",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 2,
-              "difficulty": 2,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["C4", "E4", "C6", "E6"],
-                "white_stones": ["D4", "D5"],
-                "target_player": "black",
-                "mission": "黑先吃白 · 枷吃手筋",
-                "question": "黑棋不用紧贴着白棋，该下在哪里像网一样罩住白棋？",
-                "solution_coord": "D6",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "D6", "note": "黑1从上方虚罩！织起天罗地网"},
-                  {"move": 2, "color": "white", "coord": "E5", "note": "白棋无论往哪边逃跑，气都只剩1气"},
-                  {"move": 3, "color": "black", "coord": "F5", "note": "黑棋顺势关门捉拿！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (不贴身)", "content": "枷吃不需要贴着白棋走，而是像罩子一样扣住白棋的前方！"},
-                  {"level": 2, "title": "🔍 提示 2 (看逃跑路线)", "content": "封锁白棋向中腹逃跑的方向。"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手走 D6 罩住！"}
-                ],
-                "explanation": "【枷吃分析】：枷吃比征子更安全，不受前方引征影响。从虚处织网，对方无论怎么冲都会立刻撞气被吃。"
-              },
-              "content": "【题目目标】：黑先吃白（枷吃手筋）\n1. 哥哥对比演示“征子”和“枷吃”的区别。\n2. 让妹妹体会枷吃的“天罗地网”美感。\n3. 妹妹独立找出 D6 枷吃点。\n4. 兄妹对弈练习枷吃防守。",
-              "requirements": "【阶段检验】妹妹能区分什么时候用枷吃比征子更好。"
-            },
-            {
-              "code": "1-5",
-              "name": "♟️ 围棋·初级进阶1-5：滚打包收（大头鬼手筋）",
-              "category": "♟️ 教妹妹围棋",
-              "stage": "初级阶段",
-              "module": "经典吃子手筋",
-              "target_goal": "通过连续打吃与扑，逼迫对方棋子聚成一团无气死棋",
-              "assignee": "潘翼芃 (指导妹妹)",
-              "reward_flowers": 3,
-              "difficulty": 3,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["C3", "C4", "C5", "E3", "F4", "F5"],
-                "white_stones": ["D4", "E4", "D5"],
-                "target_player": "black",
-                "mission": "黑先吃白 · 滚打包收",
-                "question": "黑棋如何通过连续叫吃，把白棋打成一个圆滚滚的肉丸子？",
-                "solution_coord": "D3",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "D3", "note": "黑1下边打吃！"},
-                  {"move": 2, "color": "white", "coord": "D2", "note": "白长出逃跑"},
-                  {"move": 3, "color": "black", "coord": "E5", "note": "黑3扑打！逼白棋吃"},
-                  {"move": 4, "color": "white", "coord": "E5", "note": "白提黑子成愚形"},
-                  {"move": 5, "color": "black", "coord": "E6", "note": "黑5枷吃，白全灭！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (连续叫吃)", "content": "不要让白棋有喘息机会，连续打吃改变对方形状！"},
-                  {"level": 2, "title": "🔍 提示 2 (打成团子)", "content": "把对方压缩成只有两三气的笨重愚形。"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手黑走 D3 打吃！"}
-                ],
-                "explanation": "【滚打包收分析】：连续运用打、扑、扳、枷，让对方棋子气越走越少，最后像大头鬼一样被全歼！"
-              },
-              "content": "【题目目标】：黑先吃白（滚打包收大头鬼）\n1. 哥哥指导妹妹完成连环打吃示范。\n2. 妹妹一步步走完滚打包收全过程。\n3. 体会棋子“气短成团”的致命弱点。",
-              "requirements": "【阶段检验】妹妹能走完 5 步连环吃子流程。"
+              "difficulty": 2
             }
           ]
         },
         {
           "module_id": 2,
-          "module_name": "死活入门与眼位攻防",
-          "timeline": "第 5-8 周",
+          "module_name": "吃子技巧",
+          "timeline": "第 3-5 周",
           "templates": [
             {
-              "code": "1-6",
-              "name": "♟️ 围棋·初级进阶1-6：直三与弯三做活急所",
+              "code": "2-1",
+              "name": "♟️ 围棋·初级模板2-1：双叫吃",
               "category": "♟️ 教妹妹围棋",
               "stage": "初级阶段",
-              "module": "死活入门与眼位攻防",
-              "target_goal": "掌握直三、弯三眼形的死活要点（中间对称点）",
+              "module": "吃子技巧",
+              "target_goal": "一步棋同时打吃两块棋",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 2,
-              "difficulty": 2,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["B3", "C3", "D3", "B5", "C5", "D5", "A4", "E4"],
-                "white_stones": [],
-                "target_player": "black",
-                "mission": "黑先做活 · 抢占中间眼位",
-                "question": "黑棋中间空出 3 个交叉点(B4, C4, D4)，黑先下哪一点能变成两只真眼？",
-                "solution_coord": "C4",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "C4", "note": "黑1抢占直三核心要点 C4！分出左右两只真眼，活棋！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (敌之要点即我之要点)", "content": "如果白棋占了中间会怎样？所以黑棋必须抢先占领！"},
-                  {"level": 2, "title": "🔍 提示 2 (对称中心)", "content": "3 个点的正中间那一点！"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解是 C4！下在 C4 直接分成 B4 和 D4 两个真眼！"}
-                ],
-                "explanation": "【直三死活】：直三、弯三的要点都在中间！谁先占到中点，黑先则活，白先点中则死！"
-              },
-              "content": "【题目目标】：黑先做活（直三/弯三要点）\n1. 哥哥摆出直三眼位，演示如果白棋占中点黑棋就死。\n2. 让妹妹抢占 C4，体会一子分两眼的快乐。\n3. 妹妹动手在棋盘上做活直三与弯三。",
-              "requirements": "【阶段检验】妹妹能迅速找出直三与弯三的做活中点。"
+              "difficulty": 2
             },
             {
-              "code": "1-7",
-              "name": "♟️ 围棋·初级进阶1-7：真眼与假眼识别",
+              "code": "2-2",
+              "name": "♟️ 围棋·初级模板2-2：征子",
               "category": "♟️ 教妹妹围棋",
               "stage": "初级阶段",
-              "module": "死活入门与眼位攻防",
-              "target_goal": "看清斜向交叉点的断点，防止假眼被破导致整块棋死亡",
+              "module": "吃子技巧",
+              "target_goal": "知道征子怎么追、什么时候征不掉",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 2,
-              "difficulty": 2,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["B4", "C3", "D4", "C5"],
-                "white_stones": ["B3", "D3"],
-                "target_player": "black",
-                "mission": "黑先补强 · 保护真眼",
-                "question": "C4 是一个眼位，但角上 B3、D3 有白子在虎视眈眈，黑棋该走哪一步彻底变成真眼？",
-                "solution_coord": "C3",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "C2", "note": "黑1接住保护角部，彻底消除假眼隐患！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (看四个角)", "content": "中间眼位看四个斜角，如果有两个斜角被白棋占领就是假眼！"},
-                  {"level": 2, "title": "🔍 提示 2 (粘接补断)", "content": "在下方弱点处补一手粘接。"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "下在 C2 牢牢接住！"}
-                ],
-                "explanation": "【真假眼口诀】：中腹眼看四角，角有两白即为假；边上眼看两角，角有一白即为假！"
-              },
-              "content": "【题目目标】：真眼与假眼攻防\n1. 哥哥讲解真假眼判断口诀。\n2. 妹妹在棋盘上找出假眼并补强为真眼。\n3. 哥哥出题破眼，妹妹防守。",
-              "requirements": "【阶段检验】妹妹能一眼分辨出哪个是真眼、哪个是假眼。"
+              "difficulty": 2
+            },
+            {
+              "code": "2-3",
+              "name": "♟️ 围棋·初级模板2-3：枷吃",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "初级阶段",
+              "module": "吃子技巧",
+              "target_goal": "不用紧气也能从虚处罩住对方",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            },
+            {
+              "code": "2-4",
+              "name": "♟️ 围棋·初级模板2-4：倒扑",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "初级阶段",
+              "module": "吃子技巧",
+              "target_goal": "送子入虎口，倒扑全提对方整块",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            }
+          ]
+        },
+        {
+          "module_id": 3,
+          "module_name": "终局计算",
+          "timeline": "第 6 周",
+          "templates": [
+            {
+              "code": "3-1",
+              "name": "♟️ 围棋·初级模板3-1：数子法入门",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "初级阶段",
+              "module": "终局计算",
+              "target_goal": "数出双方各自占领的目数地盘",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            },
+            {
+              "code": "3-2",
+              "name": "♟️ 围棋·初级模板3-2：判断胜负",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "初级阶段",
+              "module": "终局计算",
+              "target_goal": "终局比较双方目数差距判定胜负",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            }
+          ]
+        },
+        {
+          "module_id": 4,
+          "module_name": "9路实战",
+          "timeline": "第 7-8 周",
+          "templates": [
+            {
+              "code": "4-1",
+              "name": "♟️ 围棋·初级模板4-1：完整下完一盘",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "初级阶段",
+              "module": "9路实战",
+              "target_goal": "9路盘完整下完一盘棋并不中途放弃",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 2
+            },
+            {
+              "code": "4-2",
+              "name": "♟️ 围棋·初级模板4-2：吃子小游戏",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "初级阶段",
+              "module": "9路实战",
+              "target_goal": "在 9 路盘进行吃 5 子先胜的趣味对弈",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            },
+            {
+              "code": "4-3",
+              "name": "♟️ 围棋·初级模板4-3：阶段性对弈",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "初级阶段",
+              "module": "9路实战",
+              "target_goal": "初级阶段结课大对弈与复盘总结",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
             }
           ]
         }
@@ -259,113 +176,173 @@
     },
     {
       "stage_id": "intermediate",
-      "stage_name": "中级阶段：死活大绝招与13路实战",
+      "stage_name": "中级阶段：死活入门 + 13 路实战（第 3-4 月）",
       "duration": "第 3-4 月",
-      "goal": "掌握丁四、刀把五、大眼比气、有眼杀无眼等高级对杀与死活技能",
-      "core_progress": "从“只看局部”到“掌握死活全貌与气数对杀”",
+      "goal": "从“能下完”到“能判断一块棋的死活”",
+      "core_progress": "从“乱下”到“能看出死活”",
       "checklist": [
-        "掌握丁四、方四、刀把五、大猪嘴的死活变化",
-        "掌握有眼杀无眼与大眼公气计算法",
-        "13路盘能熟练进行角部定式与中盘切断"
+        "掌握直三、直四、弯三、弯四、方四、丁四的死活要点",
+        "掌握真眼与假眼、做眼与破眼的方法",
+        "掌握数气与对杀基本判断，13路盘完整对弈"
       ],
       "modules": [
         {
-          "module_id": 3,
-          "module_name": "经典死活大绝招",
-          "timeline": "第 1-4 周",
+          "module_id": 5,
+          "module_name": "基础死活型",
+          "timeline": "第 1-3 周",
           "templates": [
             {
-              "code": "2-1",
-              "name": "♟️ 围棋·中级进阶2-1：丁四死活急所（笠帽四点眼）",
+              "code": "中级1-1",
+              "name": "♟️ 围棋·中级模板1-1：直三与弯三",
               "category": "♟️ 教妹妹围棋",
               "stage": "中级阶段",
-              "module": "经典死活大绝招",
-              "target_goal": "掌握丁四（品字形加一点）的死活要害",
+              "module": "基础死活型",
+              "target_goal": "抢占直三和弯三的中间做活急所",
               "assignee": "潘翼芃 (指导妹妹)",
-              "reward_flowers": 3,
-              "difficulty": 3,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["B3", "C2", "D2", "E3", "D4", "C4"],
-                "white_stones": ["A3", "B2", "C1", "D1", "E2", "F3", "E4", "D5", "C5", "B4"],
-                "target_player": "white",
-                "mission": "白先杀黑 · 丁四点眼",
-                "question": "黑棋内部形成了丁四眼形(C3, D3, C2, D2)，白棋点在哪个要点能让黑棋无法成活？",
-                "solution_coord": "D3",
-                "solution_steps": [
-                  {"move": 1, "color": "white", "coord": "D3", "note": "白1点入丁四核心要害！黑棋无法分出两眼，全灭！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (丁字中心)", "content": "找到四个点中最核心的交汇点。"},
-                  {"level": 2, "title": "🔍 提示 2 (破坏两眼)", "content": "只要占住这个中心，黑棋不管怎么下都只能凑出一只眼。"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "白先点在 D3 处！"}
-                ],
-                "explanation": "【丁四死活】：丁四又称笠帽四，形状如“丁”字。中心点就是死活命门，谁抢到谁赢！"
-              },
-              "content": "【题目目标】：白先杀黑（丁四点眼破眼）\n1. 哥哥摆出丁四死活局面。\n2. 妹妹执白寻找点眼破眼要点。\n3. 哥哥演示黑棋若抢到中点如何做活。\n4. 总结丁四死活要诀。",
-              "requirements": "【阶段检验】妹妹能准确指出丁四的唯一做活与点杀要点。"
+              "reward_flowers": 2,
+              "difficulty": 2
             },
             {
-              "code": "2-2",
-              "name": "♟️ 围棋·中级进阶2-2：刀把五死活要点",
+              "code": "中级1-2",
+              "name": "♟️ 围棋·中级模板1-2：直四与弯四",
               "category": "♟️ 教妹妹围棋",
               "stage": "中级阶段",
-              "module": "经典死活大绝招",
-              "target_goal": "攻克五子大眼中的著名死活型“刀把五”",
+              "module": "基础死活型",
+              "target_goal": "掌握直四和弯四的天然两眼活形",
               "assignee": "潘翼芃 (指导妹妹)",
-              "reward_flowers": 3,
-              "difficulty": 3,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["B2", "C2", "D2", "D3", "C4", "B4", "A3"],
-                "white_stones": ["A2", "B1", "C1", "D1", "E2", "E3", "E4", "D5", "C5", "B5", "A4"],
-                "target_player": "white",
-                "mission": "白先杀黑 · 刀把五点眼",
-                "question": "黑棋内部是刀把五眼形，白先下在何处能一击必杀？",
-                "solution_coord": "C3",
-                "solution_steps": [
-                  {"move": 1, "color": "white", "coord": "C3", "note": "白1点在刀把五的刀把核心 C3！黑必死！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (刀身与刀把)", "content": "刀把五由四个方形加一个突出手柄组成，要点在刀柄连接处！"},
-                  {"level": 2, "title": "🔍 提示 2 (关键眼位)", "content": "下在 C3 处，黑棋无法做出两个真眼。"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "白先走 C3！"}
-                ],
-                "explanation": "【刀把五死活】：刀把五是围棋大眼死活的难点，形似菜刀把手，要害在刀把关键拐角处！"
-              },
-              "content": "【题目目标】：刀把五攻防\n1. 哥哥带妹妹画出刀把五的形状（四方带一柄）。\n2. 妹妹执白点杀 C3。\n3. 演练黑棋先走 C3 成功做活的变化。",
-              "requirements": "【阶段检验】妹妹能在棋盘上认出刀把五并找到核心要害点。"
+              "reward_flowers": 2,
+              "difficulty": 2
             },
             {
-              "code": "2-3",
-              "name": "♟️ 围棋·中级进阶2-3：有眼杀无眼与大眼比气",
+              "code": "中级1-3",
+              "name": "♟️ 围棋·中级模板1-3：方四与丁四",
               "category": "♟️ 教妹妹围棋",
               "stage": "中级阶段",
-              "module": "经典死活大绝招",
-              "target_goal": "掌握“有眼杀无眼”的神奇优势，学会利用公气对杀",
+              "module": "基础死活型",
+              "target_goal": "掌握方四点心必死、丁四抢占中点死活",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 3,
-              "difficulty": 3,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["A2", "B1", "C1", "C2", "B3", "A4"],
-                "white_stones": ["A1", "D1", "D2", "D3", "C4", "B4"],
-                "target_player": "black",
-                "mission": "黑先对杀 · 有眼杀无眼",
-                "question": "黑棋在角部有一只真眼，白棋没有眼，双方紧贴对杀。黑棋该如何紧气？",
-                "solution_coord": "D2",
-                "solution_steps": [
-                  {"move": 1, "color": "black", "coord": "D1", "note": "黑1从外气紧逼白棋！公气属于有眼的一方，白棋无法入气！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (公气归有眼)", "content": "记住围棋铁律：“有眼杀无眼，公气归有眼者所有”！"},
-                  {"level": 2, "title": "🔍 提示 2 (收外气)", "content": "黑棋不要急着填公气，从白棋的外气收起！"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手黑走 D1 收外气！"}
-                ],
-                "explanation": "【有眼杀无眼】：只要有一只真眼，中间的公共气就全归你！对方必须先填外气才能入眼，所以有眼方胜率极大！"
-              },
-              "content": "【题目目标】：有眼杀无眼对杀\n1. 哥哥讲解“公气归有眼者”的核心秘密。\n2. 兄妹对弈数气比拼。\n3. 妹妹体会为什么一只小小的真眼能有这么大威力。",
-              "requirements": "【阶段检验】妹妹能记住并运用“有眼杀无眼”口诀。"
+              "difficulty": 3
+            },
+            {
+              "code": "中级1-4",
+              "name": "♟️ 围棋·中级模板1-4：死活型综合练习",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "基础死活型",
+              "target_goal": "攻克刀把五与常见死活型综合对杀",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            }
+          ]
+        },
+        {
+          "module_id": 6,
+          "module_name": "做眼与破眼",
+          "timeline": "第 4-5 周",
+          "templates": [
+            {
+              "code": "中级2-1",
+              "name": "♟️ 围棋·中级模板2-1：真眼与假眼",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "做眼与破眼",
+              "target_goal": "看清斜角断点，保护真眼",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            },
+            {
+              "code": "中级2-2",
+              "name": "♟️ 围棋·中级模板2-2：做眼方法",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "做眼与破眼",
+              "target_goal": "扩大眼位与分眼急所",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            },
+            {
+              "code": "中级2-3",
+              "name": "♟️ 围棋·中级模板2-3：破眼方法",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "做眼与破眼",
+              "target_goal": "缩小眼位与尖入点眼破眼",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            }
+          ]
+        },
+        {
+          "module_id": 7,
+          "module_name": "简单对杀",
+          "timeline": "第 6 周",
+          "templates": [
+            {
+              "code": "中级3-1",
+              "name": "♟️ 围棋·中级模板3-1：数气",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "简单对杀",
+              "target_goal": "计算双方各自外气与公气",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 2,
+              "difficulty": 2
+            },
+            {
+              "code": "中级3-2",
+              "name": "♟️ 围棋·中级模板3-2：对杀基本判断",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "简单对杀",
+              "target_goal": "掌握有眼杀无眼与公气归有眼方",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            }
+          ]
+        },
+        {
+          "module_id": 8,
+          "module_name": "13路实战",
+          "timeline": "第 7-8 周",
+          "templates": [
+            {
+              "code": "中级4-1",
+              "name": "♟️ 围棋·中级模板4-1：13路完整对弈",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "13路实战",
+              "target_goal": "13路盘角部占领与中盘大局观",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            },
+            {
+              "code": "中级4-2",
+              "name": "♟️ 围棋·中级模板4-2：死活专项复盘",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "13路实战",
+              "target_goal": "角部胀牯牛手筋与死活复盘",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            },
+            {
+              "code": "中级4-3",
+              "name": "♟️ 围棋·中级模板4-3：阶段性对弈",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "中级阶段",
+              "module": "13路实战",
+              "target_goal": "中级阶段毕业大对弈与跨断攻防",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
             }
           ]
         }
@@ -373,85 +350,162 @@
     },
     {
       "stage_id": "advanced",
-      "stage_name": "高级阶段：19路全局大局观与定式实战",
+      "stage_name": "高级阶段：19 路对弈 + 综合实战（第 5-6 月）",
       "duration": "第 5-6 月",
-      "goal": "掌握 19 路完整对弈大局观、星位定式、点三三破解与官子妙手",
-      "core_progress": "从“局部对杀”到“全局配合与战略对弈”",
+      "goal": "从“会判断死活”到“能和哥哥完整对弈一盘 19 路棋”",
+      "core_progress": "从“能下”到“能对弈”",
       "checklist": [
-        "掌握点三三定式与星位小飞挂角应对",
-        "掌握金角银边草肚皮的占位优先级",
-        "能与哥哥完整对弈一盘 19 路棋（让 2-4 子）并复盘"
+        "掌握布局常识：角→边→中腹优先级",
+        "掌握连接与分断技巧、跨断与双连接",
+        "掌握先手与后手、简单目数计算，19路完整对弈"
       ],
       "modules": [
         {
-          "module_id": 4,
-          "module_name": "实战定式与全局选点",
-          "timeline": "第 1-4 周",
+          "module_id": 9,
+          "module_name": "布局常识",
+          "timeline": "第 1-2 周",
           "templates": [
             {
-              "code": "3-1",
-              "name": "♟️ 围棋·高级进阶3-1：点三三定式实战攻防",
+              "code": "高级1-1",
+              "name": "♟️ 围棋·高级模板1-1：角→边→中腹",
               "category": "♟️ 教妹妹围棋",
               "stage": "高级阶段",
-              "module": "实战定式与全局选点",
-              "target_goal": "学习现代最流行的星位点三三定式变化",
+              "module": "布局常识",
+              "target_goal": "领会金角银边草肚皮的最高效率原则",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 3,
-              "difficulty": 4,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["G7"],
-                "white_stones": ["G8"],
-                "target_player": "white",
-                "mission": "白先入侵 · 点三三定式",
-                "question": "黑棋占了星位 G7，白棋直接点入三三 C3/G7 角部，黑棋第一步该往哪边挡？",
-                "solution_coord": "G6",
-                "solution_steps": [
-                  {"move": 1, "color": "white", "coord": "H8", "note": "白1点入三三"},
-                  {"move": 2, "color": "black", "coord": "G8", "note": "黑2方向正确！从宽的一侧挡住！"},
-                  {"move": 3, "color": "white", "coord": "H7", "note": "白3爬"},
-                  {"move": 4, "color": "black", "coord": "G7", "note": "黑4长，筑起坚固外势！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (挡向宽边)", "content": "挡的方向决定外势配合，哪边配合好就往哪边挡！"},
-                  {"level": 2, "title": "🔍 提示 2 (不给轻易出头)", "content": "封锁对方出头路线。"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "黑棋挡在 G8 或 H7（根据配合选择）！"}
-                ],
-                "explanation": "【点三三定式】：白取实地，黑取外势！点三三定式是检验大局观与实地外势平衡的最佳练习。"
-              },
-              "content": "【题目目标】：点三三实战定式\n1. 哥哥摆出 19 路角部星位，妹妹执白点三三。\n2. 哥哥指导妹妹完成标准定式 6 步棋。\n3. 讨论“实地”与“外势”的价值转换。",
-              "requirements": "【阶段检验】妹妹能流畅下出点三三的标准定式次序。"
+              "difficulty": 3
             },
             {
-              "code": "3-2",
-              "name": "♟️ 围棋·高级进阶3-2：金角银边草肚皮选点",
+              "code": "高级1-2",
+              "name": "♟️ 围棋·高级模板1-2：星位与小飞挂",
               "category": "♟️ 教妹妹围棋",
               "stage": "高级阶段",
-              "module": "实战定式与全局选点",
-              "target_goal": "掌握布局阶段“先角、次边、后中腹”的最高效率原则",
+              "module": "布局常识",
+              "target_goal": "掌握星位小飞挂角与小飞守角定式",
               "assignee": "潘翼芃 (指导妹妹)",
               "reward_flowers": 3,
-              "difficulty": 4,
-              "board_puzzle": {
-                "board_size": 9,
-                "black_stones": ["C3", "G3"],
-                "white_stones": ["C7"],
-                "target_player": "white",
-                "mission": "白先布局 · 抢占金角",
-                "question": "开局阶段还有空角未占，白棋应该抢占哪个位置？",
-                "solution_coord": "G7",
-                "solution_steps": [
-                  {"move": 1, "color": "white", "coord": "G7", "note": "白1抢占最后一个空角 G7！金角效率最高！"}
-                ],
-                "hints": [
-                  {"level": 1, "title": "💡 提示 1 (金角银边)", "content": "角部围空只需要两面挡，边上需要三面，中腹需要四面！"},
-                  {"level": 2, "title": "🔍 提示 2 (空角优先)", "content": "场上还有一个空角没有占领。"},
-                  {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "走 G7 占领右上角星位！"}
-                ],
-                "explanation": "【金角银边口诀】：角最容易围地（效率最高），边次之，中腹最难围地。开局一定要先占四个角！"
-              },
-              "content": "【题目目标】：布局大局观（先角次边后中腹）\n1. 哥哥用数子法证明：在角部围 4 目需要几颗子，在中间围 4 目需要几颗子。\n2. 妹妹亲手计算并领悟“金角银边草肚皮”的数学效率。\n3. 兄妹完整下 1 盘 19 路棋实战！",
-              "requirements": "【阶段检验】妹妹在开局阶段能自觉先占角和拆边，不盲目往中间乱下。"
+              "difficulty": 3
+            },
+            {
+              "code": "高级1-3",
+              "name": "♟️ 围棋·高级模板1-3：布局实战",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "布局常识",
+              "target_goal": "三连星宇宙流大模样布局实战",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 4
+            }
+          ]
+        },
+        {
+          "module_id": 10,
+          "module_name": "连接与分断",
+          "timeline": "第 3-4 周",
+          "templates": [
+            {
+              "code": "高级2-1",
+              "name": "♟️ 围棋·高级模板2-1：基本连接",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "连接与分断",
+              "target_goal": "掌握双连接一子补两断",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            },
+            {
+              "code": "高级2-2",
+              "name": "♟️ 围棋·高级模板2-2：分断技巧",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "连接与分断",
+              "target_goal": "强行跨断切开对方两子连络",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            },
+            {
+              "code": "高级2-3",
+              "name": "♟️ 围棋·高级模板2-3：连接与分断实战",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "连接与分断",
+              "target_goal": "运用夹断手筋撕开对方防线",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 4
+            }
+          ]
+        },
+        {
+          "module_id": 11,
+          "module_name": "官子入门",
+          "timeline": "第 5 周",
+          "templates": [
+            {
+              "code": "高级3-1",
+              "name": "♟️ 围棋·高级模板3-1：先手与后手",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "官子入门",
+              "target_goal": "领会先手一目大如天，二路扳粘搜刮",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            },
+            {
+              "code": "高级3-2",
+              "name": "♟️ 围棋·高级模板3-2：简单目数计算",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "官子入门",
+              "target_goal": "掌握官子出入法计算",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 3
+            }
+          ]
+        },
+        {
+          "module_id": 12,
+          "module_name": "19路实战",
+          "timeline": "第 6-8 周",
+          "templates": [
+            {
+              "code": "高级4-1",
+              "name": "♟️ 围棋·高级模板4-1：完整19路对弈",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "19路实战",
+              "target_goal": "19路全局让子棋对弈（让4子）",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 4
+            },
+            {
+              "code": "高级4-2",
+              "name": "♟️ 围棋·高级模板4-2：综合复盘",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "19路实战",
+              "target_goal": "关键胜负手推演与复盘大局观",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 4
+            },
+            {
+              "code": "高级4-3",
+              "name": "♟️ 围棋·高级模板4-3：最终对弈",
+              "category": "♟️ 教妹妹围棋",
+              "stage": "高级阶段",
+              "module": "19路实战",
+              "target_goal": "兄妹围棋教学体系最终巅峰大对弈",
+              "assignee": "潘翼芃 (指导妹妹)",
+              "reward_flowers": 3,
+              "difficulty": 4
             }
           ]
         }
