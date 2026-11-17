@@ -97,8 +97,14 @@ WEIQI_STAGES = [
 	}
 ]
 
-# Backward compatibility alias
-WEIQI_CURRICULUM = WEIQI_STAGES
+# Load structured Weiqi Curriculum with board puzzles if available
+CURRICULUM_JSON_PATH = os.path.join(current_dir, "weiqi_templates_curriculum.json")
+try:
+	with open(CURRICULUM_JSON_PATH, "r", encoding="utf-8") as f:
+		_curriculum_data = json.load(f)
+		WEIQI_CURRICULUM = _curriculum_data.get("stages", WEIQI_STAGES)
+except Exception:
+	WEIQI_CURRICULUM = WEIQI_STAGES
 
 def get_db_connection(db_path=DB_PATH):
 	"""Returns a connection to the SQLite database with row_factory set."""

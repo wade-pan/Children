@@ -1410,6 +1410,110 @@
     </div>
 </div>
 
+<!-- Interactive Weiqi Board & Tsumego Challenge Modal -->
+<div id="weiqiPuzzleModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(6px); z-index: 10000; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: white; border-radius: 24px; width: 100%; max-width: 960px; max-height: 92vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35); overflow: hidden; animation: popIn 0.25s ease;">
+        <div style="padding: 18px 24px; border-bottom: 1px solid #fde68a; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #fef3c7 0%, #fffbeb 100%);">
+            <div>
+                <h3 id="weiqiModalTitle" style="font-size: 1.25rem; font-weight: 800; color: #92400e; margin: 0; display: flex; align-items: center; gap: 8px;">
+                    ♟️ 围棋死活与手筋实战图谱
+                </h3>
+                <p id="weiqiModalSubtitle" style="font-size: 0.82rem; color: #b45309; margin: 2px 0 0 0;">
+                    哥哥潘翼芃指导妹妹潘一柠 · 实战局面分析与落子步骤
+                </p>
+            </div>
+            <button type="button" onclick="closeWeiqiPuzzleModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #92400e; font-weight: bold;">&times;</button>
+        </div>
+
+        <div style="padding: 24px; overflow-y: auto; display: grid; grid-template-columns: 440px 1fr; gap: 24px; align-items: start;">
+            <!-- Left: Go Board Visualization -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 14px;">
+                <div id="weiqiBoardSvgContainer" style="box-shadow: 0 10px 25px rgba(180, 83, 9, 0.25); border-radius: 16px; overflow: hidden; background: #e5a657; border: 3px solid #b45309; line-height: 0;">
+                    <!-- SVG rendered here -->
+                </div>
+                
+                <!-- Board interactive actions -->
+                <div style="display: flex; gap: 10px; width: 100%; justify-content: center; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-primary" id="btnPlayWeiqiSolution" onclick="playWeiqiPuzzleSolution()" style="font-size: 0.85rem; padding: 8px 16px; background: #b45309; border-color: #92400e;">
+                        ▶️ 演示正解步骤
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetWeiqiPuzzleBoard()" style="font-size: 0.85rem; padding: 8px 14px;">
+                        🔄 重置局面
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="copyWeiqiBoardPrompt()" style="font-size: 0.85rem; padding: 8px 14px; background: #fef3c7; color: #92400e; border-color: #fde68a;">
+                        📋 复制题面与棋谱
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right: Puzzle Info & Hints -->
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <!-- Mission & Target -->
+                <div style="background: #fffdf5; border: 1.5px solid #fde68a; border-radius: 14px; padding: 14px 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span id="weiqiModalMissionBadge" class="badge badge-weiqi" style="font-size: 0.85rem; padding: 4px 10px;">
+                            黑先吃白 · 倒扑手筋
+                        </span>
+                        <span id="weiqiModalDiffStars" style="color: #f59e0b; font-size: 0.95rem; font-weight: bold;">
+                            ⭐⭐
+                        </span>
+                    </div>
+                    <div id="weiqiModalQuestion" style="font-size: 0.95rem; font-weight: 800; color: #92400e; line-height: 1.5;">
+                        请观察白棋气数，找出黑棋第一步下在何处！
+                    </div>
+                </div>
+
+                <!-- 3 Progressive Hints -->
+                <div style="background: white; border: 1.5px solid var(--gray-200); border-radius: 14px; padding: 14px 16px;">
+                    <div style="font-weight: 800; color: var(--gray-800); font-size: 0.88rem; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>💡 解题思考锦囊 (3 级层级提示)</span>
+                        <span style="font-size: 0.75rem; color: var(--gray-500);">点击揭开提示引导妹妹思考</span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div id="weiqiHintBox1" style="background: #fffbeb; border: 1px dashed #fde68a; border-radius: 10px; padding: 10px 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 700; color: #92400e;">
+                                <span>💡 提示 1 (观察气数)</span>
+                                <button type="button" class="btn btn-secondary" onclick="toggleWeiqiHint(1)" style="padding: 2px 8px; font-size: 0.72rem;">揭开</button>
+                            </div>
+                            <div id="weiqiHintText1" style="display: none; margin-top: 6px; font-size: 0.82rem; color: #78350f; line-height: 1.45;"></div>
+                        </div>
+
+                        <div id="weiqiHintBox2" style="background: #fffbeb; border: 1px dashed #fde68a; border-radius: 10px; padding: 10px 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 700; color: #92400e;">
+                                <span>🔍 提示 2 (手筋方向)</span>
+                                <button type="button" class="btn btn-secondary" onclick="toggleWeiqiHint(2)" style="padding: 2px 8px; font-size: 0.72rem;">揭开</button>
+                            </div>
+                            <div id="weiqiHintText2" style="display: none; margin-top: 6px; font-size: 0.82rem; color: #78350f; line-height: 1.45;"></div>
+                        </div>
+
+                        <div id="weiqiHintBox3" style="background: #fffbeb; border: 1px dashed #fde68a; border-radius: 10px; padding: 10px 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; font-weight: 700; color: #92400e;">
+                                <span>🎯 提示 3 (落子坐标与正解)</span>
+                                <button type="button" class="btn btn-secondary" onclick="toggleWeiqiHint(3)" style="padding: 2px 8px; font-size: 0.72rem;">揭开</button>
+                            </div>
+                            <div id="weiqiHintText3" style="display: none; margin-top: 6px; font-size: 0.82rem; color: #78350f; line-height: 1.45;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explanation & Solution Steps -->
+                <div id="weiqiExplanationBox" style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 14px 16px;">
+                    <div style="font-weight: 800; color: #166534; font-size: 0.88rem; margin-bottom: 6px;">
+                        📖 妙手复盘与步骤解析:
+                    </div>
+                    <div id="weiqiExplanationText" style="font-size: 0.84rem; color: #15803d; line-height: 1.55; white-space: pre-wrap;"></div>
+                </div>
+
+                <!-- Publish action -->
+                <button type="button" id="btnPublishFromWeiqiModal" class="btn btn-primary" onclick="publishFromWeiqiModal()" style="width: 100%; padding: 12px; font-size: 0.95rem; font-weight: 800; background: linear-gradient(135deg, #b45309 0%, #92400e 100%);">
+                    🚀 将此围棋死活题发布到今日打卡清单
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Published Task Edit Modal -->
 <div id="taskEditModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
     <div style="background: white; border-radius: 20px; width: 100%; max-width: 640px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; animation: popIn 0.2s ease;">
@@ -2765,6 +2869,337 @@
     }
 
     let currentActiveWeiqiStage = 'beginner';
+    let globalWeiqiCurriculumStages = [];
+    let currentActivePuzzle = null;
+    let currentPuzzleIsSolved = false;
+
+    // Load structured curriculum with board puzzle coordinates
+    async function loadWeiqiCurriculumData() {
+        try {
+            const res = await fetch('/api/weiqi/curriculum');
+            const data = await res.json();
+            if (data.success && data.curriculum) {
+                globalWeiqiCurriculumStages = data.curriculum;
+            }
+        } catch(e) {
+            console.error('Error loading weiqi curriculum:', e);
+        }
+    }
+
+    function getBoardPuzzleForTemplate(t) {
+        if (!t) return null;
+        if (t.board_puzzle) return t.board_puzzle;
+
+        if (globalWeiqiCurriculumStages && globalWeiqiCurriculumStages.length > 0) {
+            for (const stage of globalWeiqiCurriculumStages) {
+                const modules = stage.modules || [];
+                for (const mod of modules) {
+                    const tpls = mod.templates || [];
+                    for (const item of tpls) {
+                        const match = (
+                            (t.code && item.code && t.code === item.code) ||
+                            (t.name && item.name && (t.name.includes(item.name) || item.name.includes(t.name)))
+                        );
+                        if (match && item.board_puzzle) {
+                            return item.board_puzzle;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Default fallback puzzle if none matched
+        return {
+            board_size: 9,
+            black_stones: ["C3", "C4", "C5", "D3", "E3", "F3", "F4", "F5"],
+            white_stones: ["D4", "E4", "D5"],
+            target_player: "black",
+            mission: "黑先吃白 · 倒扑手筋",
+            question: "黑棋该下在哪个位置，能巧妙倒扑提掉白棋整块？",
+            solution_coord: "E5",
+            solution_steps: [
+                {"move": 1, "color": "black", "coord": "E5", "note": "黑1扑入虎口！白三子处于被提边缘"},
+                {"move": 2, "color": "white", "coord": "E5", "note": "白2提掉黑1子，但自身只剩最后1气！"},
+                {"move": 3, "color": "black", "coord": "E5", "note": "黑3再次落子，直接倒扑全提白棋！"}
+            ],
+            hints: [
+                {"level": 1, "title": "💡 提示 1 (观察气数)", "content": "仔细看白棋 D4、E4、D5，如果从外面打吃，白棋接上就跑了！"},
+                {"level": 2, "title": "🔍 提示 2 (虎口扑入)", "content": "勇敢地把一颗黑子送进白棋虎口 E5，故意让对方提掉！"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手黑棋走 E5！白提掉后白棋只剩 1 气，黑再下一手 E5 即可全部提回！"}
+            ],
+            explanation: "【倒扑妙手分析】：先弃一子送入对方口中，破坏对方眼形并紧住对方最后的气，下一步直接全提！"
+        };
+    }
+
+    // SVG Go Board Visualizer
+    function renderGoBoardSVG(puzzle, size = 440) {
+        if (!puzzle) return '';
+        const boardSize = puzzle.board_size || 9;
+        const padding = Math.max(16, size * 0.08);
+        const usableSize = size - padding * 2;
+        const step = usableSize / (boardSize - 1);
+        
+        const colLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'].slice(0, boardSize);
+
+        function coordToXY(coord) {
+            if (!coord || coord === 'pass') return null;
+            coord = coord.trim().toUpperCase();
+            const letter = coord[0];
+            const rowNum = parseInt(coord.slice(1), 10);
+            const colIdx = colLetters.indexOf(letter);
+            if (colIdx === -1 || isNaN(rowNum) || rowNum < 1 || rowNum > boardSize) return null;
+            const x = padding + colIdx * step;
+            const y = padding + (boardSize - rowNum) * step;
+            return { x, y, colIdx, rowNum };
+        }
+
+        const uid = 'gb_' + Math.floor(Math.random() * 1000000);
+        let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" style="display:block; user-select:none; border-radius:12px;">`;
+        
+        svg += `
+            <defs>
+                <radialGradient id="woodGrad_${uid}" cx="50%" cy="50%" r="70%">
+                    <stop offset="0%" stop-color="#f8d59b" />
+                    <stop offset="60%" stop-color="#e8a855" />
+                    <stop offset="100%" stop-color="#cb8632" />
+                </radialGradient>
+                <radialGradient id="blackStoneGrad_${uid}" cx="35%" cy="30%" r="65%">
+                    <stop offset="0%" stop-color="#555e6d" />
+                    <stop offset="35%" stop-color="#1e293b" />
+                    <stop offset="100%" stop-color="#020617" />
+                </radialGradient>
+                <radialGradient id="whiteStoneGrad_${uid}" cx="35%" cy="30%" r="65%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="65%" stop-color="#f8fafc" />
+                    <stop offset="100%" stop-color="#cbd5e1" />
+                </radialGradient>
+                <filter id="stoneShadow_${uid}" x="-25%" y="-25%" width="160%" height="160%">
+                    <feDropShadow dx="1.5" dy="2.5" stdDeviation="2" flood-color="#000000" flood-opacity="0.4" />
+                </filter>
+                <filter id="targetGlow_${uid}" x="-30%" y="-30%" width="160%" height="160%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#ef4444" flood-opacity="0.85" />
+                </filter>
+            </defs>
+        `;
+
+        // Board background
+        svg += `<rect width="${size}" height="${size}" rx="12" fill="url(#woodGrad_${uid})" />`;
+        svg += `<rect x="5" y="5" width="${size - 10}" height="${size - 10}" rx="8" fill="none" stroke="#8c5113" stroke-width="1.5" opacity="0.5" />`;
+
+        // Coordinates (if size >= 180)
+        if (size >= 180) {
+            const fontSize = Math.max(9, size * 0.026);
+            colLetters.forEach((l, idx) => {
+                const x = padding + idx * step;
+                svg += `<text x="${x}" y="${padding * 0.6}" font-size="${fontSize}" font-weight="700" fill="#78350f" text-anchor="middle" font-family="sans-serif">${l}</text>`;
+                svg += `<text x="${x}" y="${size - padding * 0.25}" font-size="${fontSize}" font-weight="700" fill="#78350f" text-anchor="middle" font-family="sans-serif">${l}</text>`;
+            });
+
+            for (let r = 1; r <= boardSize; r++) {
+                const y = padding + (boardSize - r) * step;
+                svg += `<text x="${padding * 0.45}" y="${y + fontSize * 0.35}" font-size="${fontSize}" font-weight="700" fill="#78350f" text-anchor="middle" font-family="sans-serif">${r}</text>`;
+                svg += `<text x="${size - padding * 0.45}" y="${y + fontSize * 0.35}" font-size="${fontSize}" font-weight="700" fill="#78350f" text-anchor="middle" font-family="sans-serif">${r}</text>`;
+            }
+        }
+
+        // Grid lines
+        for (let i = 0; i < boardSize; i++) {
+            const x = padding + i * step;
+            const y = padding + i * step;
+            svg += `<line x1="${x}" y1="${padding}" x2="${x}" y2="${size - padding}" stroke="#592b02" stroke-width="${size > 200 ? '1.2' : '0.9'}" />`;
+            svg += `<line x1="${padding}" y1="${y}" x2="${size - padding}" y2="${y}" stroke="#592b02" stroke-width="${size > 200 ? '1.2' : '0.9'}" />`;
+        }
+
+        // Star points (Hoshi)
+        const starCoords = [];
+        if (boardSize === 9) {
+            starCoords.push('C3', 'G3', 'C7', 'G7', 'E5');
+        } else if (boardSize === 13) {
+            starCoords.push('D4', 'K4', 'D10', 'K10', 'G7');
+        } else if (boardSize === 19) {
+            starCoords.push('D4', 'K4', 'Q4', 'D10', 'K10', 'Q10', 'D16', 'K16', 'Q16');
+        }
+
+        const dotR = size > 250 ? 3 : 2;
+        starCoords.forEach(c => {
+            const pt = coordToXY(c);
+            if (pt) {
+                svg += `<circle cx="${pt.x}" cy="${pt.y}" r="${dotR}" fill="#592b02" />`;
+            }
+        });
+
+        const stoneRadius = step * 0.44;
+
+        // Render Black Stones
+        const blackStones = puzzle.black_stones || [];
+        blackStones.forEach(coord => {
+            const pt = coordToXY(coord);
+            if (pt) {
+                svg += `<circle cx="${pt.x}" cy="${pt.y}" r="${stoneRadius}" fill="url(#blackStoneGrad_${uid})" filter="url(#stoneShadow_${uid})" />`;
+            }
+        });
+
+        // Render White Stones
+        const whiteStones = puzzle.white_stones || [];
+        whiteStones.forEach(coord => {
+            const pt = coordToXY(coord);
+            if (pt) {
+                svg += `<circle cx="${pt.x}" cy="${pt.y}" r="${stoneRadius}" fill="url(#whiteStoneGrad_${uid})" filter="url(#stoneShadow_${uid})" />`;
+                svg += `<circle cx="${pt.x}" cy="${pt.y}" r="${stoneRadius}" fill="none" stroke="#94a3b8" stroke-width="0.7" />`;
+            }
+        });
+
+        // Highlight / Solution Steps
+        if (puzzle.highlight_moves && puzzle.highlight_moves.length > 0) {
+            puzzle.highlight_moves.forEach(m => {
+                const pt = coordToXY(m.coord);
+                if (pt) {
+                    const isBlack = (m.color === 'black');
+                    svg += `<circle cx="${pt.x}" cy="${pt.y}" r="${stoneRadius}" fill="${isBlack ? `url(#blackStoneGrad_${uid})` : `url(#whiteStoneGrad_${uid})`}" filter="url(#stoneShadow_${uid})" />`;
+                    if (!isBlack) {
+                        svg += `<circle cx="${pt.x}" cy="${pt.y}" r="${stoneRadius}" fill="none" stroke="#94a3b8" stroke-width="0.7" />`;
+                    }
+                    const textColor = isBlack ? '#ffffff' : '#0f172a';
+                    const stepFontSize = Math.max(10, step * 0.45);
+                    svg += `<text x="${pt.x}" y="${pt.y + stepFontSize * 0.35}" font-size="${stepFontSize}" font-weight="900" fill="${textColor}" text-anchor="middle" font-family="sans-serif">${m.step || 1}</text>`;
+                }
+            });
+        } else if (puzzle.solution_coord && puzzle.show_target_marker) {
+            const pt = coordToXY(puzzle.solution_coord);
+            if (pt) {
+                svg += `<circle cx="${pt.x}" cy="${pt.y}" r="${stoneRadius * 0.8}" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="3,2" filter="url(#targetGlow_${uid})" />`;
+                svg += `<text x="${pt.x}" y="${pt.y + 4}" font-size="12" font-weight="900" fill="#ef4444" text-anchor="middle">🎯</text>`;
+            }
+        }
+
+        svg += `</svg>`;
+        return svg;
+    }
+
+    function openWeiqiPuzzleModal(templateId) {
+        let templates = (globalTemplatesList && globalTemplatesList.length > 0) ? globalTemplatesList : DEFAULT_TEMPLATES;
+        const t = templates.find(x => x.id === templateId);
+        if (!t) return;
+
+        const puzzle = getBoardPuzzleForTemplate(t);
+        currentActivePuzzle = { template: t, puzzle: JSON.parse(JSON.stringify(puzzle)) };
+        currentPuzzleIsSolved = false;
+
+        document.getElementById('weiqiModalTitle').innerHTML = `♟️ ${t.name}`;
+        document.getElementById('weiqiModalMissionBadge').textContent = puzzle.mission || '黑先吃白 · 经典手筋';
+        document.getElementById('weiqiModalDiffStars').textContent = '⭐'.repeat(t.difficulty || puzzle.difficulty || 2);
+        document.getElementById('weiqiModalQuestion').textContent = puzzle.question || t.target_goal || '请观察棋盘，找出黑棋第一步下在何处！';
+
+        // Reset Hints
+        for (let i = 1; i <= 3; i++) {
+            const tEl = document.getElementById(`weiqiHintText${i}`);
+            const btnEl = document.querySelector(`#weiqiHintBox${i} button`);
+            if (tEl) {
+                tEl.style.display = 'none';
+                if (puzzle.hints && puzzle.hints[i - 1]) {
+                    tEl.textContent = puzzle.hints[i - 1].content;
+                } else {
+                    tEl.textContent = '暂无更多提示';
+                }
+            }
+            if (btnEl) btnEl.textContent = '揭开';
+        }
+
+        // Explanation text
+        const expEl = document.getElementById('weiqiExplanationText');
+        if (expEl) {
+            let expHtml = (puzzle.explanation || '') + '\n\n';
+            if (puzzle.solution_steps && puzzle.solution_steps.length > 0) {
+                expHtml += '【落子次序与变化说明】：\n';
+                puzzle.solution_steps.forEach(s => {
+                    const colorName = s.color === 'black' ? '黑' : '白';
+                    expHtml += `${s.move}. ${colorName}${s.coord}: ${s.note}\n`;
+                });
+            }
+            expEl.textContent = expHtml;
+        }
+
+        // Render initial board SVG
+        const container = document.getElementById('weiqiBoardSvgContainer');
+        if (container) {
+            container.innerHTML = renderGoBoardSVG(puzzle, 440);
+        }
+
+        const modal = document.getElementById('weiqiPuzzleModal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeWeiqiPuzzleModal() {
+        const modal = document.getElementById('weiqiPuzzleModal');
+        if (modal) modal.style.display = 'none';
+        currentActivePuzzle = null;
+    }
+
+    function playWeiqiPuzzleSolution() {
+        if (!currentActivePuzzle || !currentActivePuzzle.puzzle) return;
+        const p = currentActivePuzzle.puzzle;
+        const steps = p.solution_steps || [];
+        if (steps.length === 0 && p.solution_coord) {
+            p.highlight_moves = [{ coord: p.solution_coord, step: 1, color: p.target_player || 'black' }];
+        } else {
+            p.highlight_moves = steps.map(s => ({ coord: s.coord, step: s.move, color: s.color }));
+        }
+
+        const container = document.getElementById('weiqiBoardSvgContainer');
+        if (container) {
+            container.innerHTML = renderGoBoardSVG(p, 440);
+        }
+
+        // Auto reveal hint 3
+        const t3 = document.getElementById('weiqiHintText3');
+        if (t3) t3.style.display = 'block';
+
+        showToast('🎯 已在棋盘上标注重磅正解落子次序！');
+    }
+
+    function resetWeiqiPuzzleBoard() {
+        if (!currentActivePuzzle || !currentActivePuzzle.template) return;
+        const freshPuzzle = getBoardPuzzleForTemplate(currentActivePuzzle.template);
+        currentActivePuzzle.puzzle = JSON.parse(JSON.stringify(freshPuzzle));
+        const container = document.getElementById('weiqiBoardSvgContainer');
+        if (container) {
+            container.innerHTML = renderGoBoardSVG(freshPuzzle, 440);
+        }
+        showToast('🔄 棋盘已重置为初始局面');
+    }
+
+    function copyWeiqiBoardPrompt() {
+        if (!currentActivePuzzle) return;
+        const t = currentActivePuzzle.template;
+        const p = currentActivePuzzle.puzzle;
+        let text = `📢 【小分队围棋死活题 · 挑战题面】\n`;
+        text += `━━━━━━━━━━━━━━━\n`;
+        text += `♟️ 题目: ${t.name}\n`;
+        text += `🎯 目标: ${p.mission || '黑先吃白'}\n`;
+        text += `❓ 问题: ${p.question || t.target_goal}\n`;
+        text += `⚫ 黑子坐标: ${(p.black_stones || []).join(', ')}\n`;
+        text += `⚪ 白子坐标: ${(p.white_stones || []).join(', ')}\n`;
+        text += `━━━━━━━━━━━━━━━\n`;
+        text += `💡 哥哥小老师已出题，请妹妹在真实棋盘上动手摆子并破局！✨`;
+
+        copyTextToClipboard(text, '📋 围棋题目与坐标已复制，可直接粘贴至微信群！');
+    }
+
+    async function publishFromWeiqiModal() {
+        if (!currentActivePuzzle || !currentActivePuzzle.template) return;
+        const tId = currentActivePuzzle.template.id;
+        closeWeiqiPuzzleModal();
+        await useTemplateToPublish(tId);
+    }
+
+    function toggleWeiqiHint(level) {
+        const textEl = document.getElementById(`weiqiHintText${level}`);
+        const btnEl = document.querySelector(`#weiqiHintBox${level} button`);
+        if (!textEl) return;
+        const isHidden = (textEl.style.display === 'none');
+        textEl.style.display = isHidden ? 'block' : 'none';
+        if (btnEl) btnEl.textContent = isHidden ? '收起' : '揭开';
+    }
 
     // Helper: Checks if a Weiqi template or topic has been completed in task check-in list or weiqi records
     function isWeiqiTemplateCompleted(template) {
@@ -2912,26 +3347,46 @@
         let html = '';
         weiqiTemplates.forEach(t => {
             const isDone = isWeiqiTemplateCompleted(t);
+            const puzzle = getBoardPuzzleForTemplate(t);
             html += `
-                <div onclick="applyWeiqiTemplate(${t.id})" style="background:${isDone ? '#f0fdf4' : 'white'}; border:1.5px solid ${isDone ? '#86efac' : '#fde68a'}; border-radius:12px; padding:12px 14px; cursor:pointer; transition:all 0.15s; display:flex; flex-direction:column; justify-content:space-between; gap:6px; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
-                    <div style="font-weight:700; color:${isDone ? '#166534' : '#92400e'}; font-size:0.88rem; display:flex; align-items:center; justify-content:space-between; gap:8px;">
-                        <span style="${isDone ? 'text-decoration: line-through; opacity: 0.85;' : ''}">${t.name}</span>
-                        <div style="display:flex; align-items:center; gap:6px;">
-                            ${isDone ? `
-                                <span class="badge" style="background:#dcfce7; color:#15803d; font-size:0.72rem; padding:2px 8px; font-weight:700;">
-                                    ✅ 已完成打卡
-                                </span>
-                            ` : ''}
-                            <button type="button" onclick="event.stopPropagation(); openEditTemplateModal(${t.id})" style="background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:2px 8px; font-size:0.72rem; color:#92400e; cursor:pointer;" title="编辑此模板">
+                <div onclick="openWeiqiPuzzleModal(${t.id})" style="background:${isDone ? '#f0fdf4' : 'white'}; border:1.5px solid ${isDone ? '#86efac' : '#fde68a'}; border-radius:14px; padding:14px 16px; cursor:pointer; transition:all 0.15s; display:flex; flex-direction:column; justify-content:space-between; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.02);">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                        <div style="flex:1;">
+                            <div style="font-weight:700; color:${isDone ? '#166534' : '#92400e'}; font-size:0.92rem; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
+                                <span style="${isDone ? 'text-decoration: line-through; opacity: 0.85;' : ''}">${t.name}</span>
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    ${isDone ? `
+                                        <span class="badge" style="background:#dcfce7; color:#15803d; font-size:0.72rem; padding:2px 8px; font-weight:700;">
+                                            ✅ 已完成打卡
+                                        </span>
+                                    ` : ''}
+                                    <span style="color:#f59e0b; font-size:0.78rem;">${'⭐'.repeat(t.difficulty || 2)}</span>
+                                </div>
+                            </div>
+                            <div style="font-size:0.8rem; color:${isDone ? '#15803d' : '#78350f'}; line-height:1.5; white-space:pre-wrap; ${isDone ? 'text-decoration: line-through; opacity: 0.8;' : ''}">
+                                ${t.content}
+                            </div>
+                        </div>
+
+                        ${puzzle ? `
+                            <div style="flex-shrink:0; width:100px; height:100px; line-height:0; border-radius:8px; overflow:hidden; border:2px solid #b45309; box-shadow:0 2px 6px rgba(180,83,9,0.2);" title="点击放大查看棋盘大图与死活解析">
+                                ${renderGoBoardSVG(puzzle, 100)}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed ${isDone ? '#bbf7d0' : '#fef3c7'}; padding-top:8px;">
+                        <button type="button" onclick="event.stopPropagation(); openWeiqiPuzzleModal(${t.id})" style="background:#fffdf5; border:1px solid #fde68a; border-radius:6px; padding:4px 10px; font-size:0.75rem; color:#b45309; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px;">
+                            ♟️ 棋盘大图与死活解析
+                        </button>
+                        <div style="display:flex; gap:6px;">
+                            <button type="button" onclick="event.stopPropagation(); openEditTemplateModal(${t.id})" style="background:#fffbeb; border:1px solid #fde68a; border-radius:6px; padding:4px 8px; font-size:0.72rem; color:#92400e; cursor:pointer;" title="编辑此模板">
                                 ✏️ 编辑
                             </button>
-                            <span class="badge" style="background:${isDone ? '#bbf7d0' : '#fef3c7'}; color:${isDone ? '#14532d' : '#92400e'}; font-size:0.7rem; padding:2px 8px; font-weight:700;">
+                            <button type="button" onclick="event.stopPropagation(); applyWeiqiTemplate(${t.id})" class="btn btn-primary" style="padding:4px 12px; font-size:0.75rem; font-weight:700; ${isDone ? 'background:#059669;' : 'background:#b45309;'}">
                                 ${isDone ? '🚀 再次布置' : '一键发布'}
-                            </span>
+                            </button>
                         </div>
-                    </div>
-                    <div style="font-size:0.78rem; color:${isDone ? '#15803d' : '#78350f'}; line-height:1.45; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; ${isDone ? 'text-decoration: line-through; opacity: 0.8;' : ''}">
-                        ${t.content.replace(/\n/g, ' ')}
                     </div>
                 </div>
             `;
@@ -2992,6 +3447,7 @@
         let html = weiqiFilterHtml;
         filtered.forEach(t => {
             const isDone = (catName === '♟️ 教妹妹围棋') ? isWeiqiTemplateCompleted(t) : false;
+            const puzzle = (catName === '♟️ 教妹妹围棋') ? getBoardPuzzleForTemplate(t) : null;
             html += `
                 <div class="task-card" style="box-shadow: 0 4px 14px rgba(0,0,0,0.03); background: ${isDone ? '#f0fdf4' : 'white'}; border: 1.5px solid ${isDone ? '#86efac' : 'var(--gray-200)'};">
                     <div>
@@ -3005,22 +3461,30 @@
                         <h4 style="font-size: 1.05rem; font-weight: 800; color: ${isDone ? '#166534' : 'var(--gray-900)'}; margin-bottom: 8px; ${isDone ? 'text-decoration: line-through; opacity: 0.85;' : ''}">
                             ${t.name}
                         </h4>
-                        <div style="font-size: 0.88rem; color: ${isDone ? '#15803d' : 'var(--gray-700)'}; background: ${isDone ? '#f0fdf4' : 'var(--gray-50)'}; padding: 12px; border-radius: 10px; line-height: 1.55; white-space: pre-wrap; margin-bottom: 10px; max-height: 150px; overflow-y: auto; ${isDone ? 'text-decoration: line-through; opacity: 0.8;' : ''}">${t.content}</div>
+
+                        <div style="display: ${puzzle ? 'flex' : 'block'}; gap: 12px; align-items: flex-start; margin-bottom: 10px;">
+                            <div style="flex: 1; font-size: 0.88rem; color: ${isDone ? '#15803d' : 'var(--gray-700)'}; background: ${isDone ? '#f0fdf4' : 'var(--gray-50)'}; padding: 12px; border-radius: 10px; line-height: 1.55; white-space: pre-wrap; max-height: 150px; overflow-y: auto; ${isDone ? 'text-decoration: line-through; opacity: 0.8;' : ''}">${t.content}</div>
+                            ${puzzle ? `
+                                <div onclick="openWeiqiPuzzleModal(${t.id})" style="flex-shrink: 0; width: 110px; height: 110px; line-height: 0; border-radius: 8px; overflow: hidden; border: 2px solid #b45309; box-shadow: 0 2px 6px rgba(180,83,9,0.2); cursor: pointer;" title="点击放大查看棋盘大图与死活解析">
+                                    ${renderGoBoardSVG(puzzle, 110)}
+                                </div>
+                            ` : ''}
+                        </div>
+
                         ${t.requirements ? `<div style="font-size: 0.8rem; color: #b45309; background: #fffdf5; border: 1px solid #fef3c7; padding: 8px 10px; border-radius: 8px; margin-bottom: 10px;">💡 ${t.requirements}</div>` : ''}
                     </div>
 
                     <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+                        ${puzzle ? `
+                            <button class="btn btn-secondary" onclick="openWeiqiPuzzleModal(${t.id})" style="font-size: 0.85rem; padding: 10px 12px; background: #fffdf5; color: #b45309; border-color: #fde68a; font-weight: 700;">
+                                ♟️ 棋盘大图解析
+                            </button>
+                        ` : ''}
                         <button class="btn btn-primary" onclick="useTemplateToPublish(${t.id})" style="flex: 1; font-size: 0.85rem; padding: 10px; ${isDone ? 'background: #059669;' : ''}">
                             ${isDone ? '🚀 再次布置此任务' : '🚀 立即发布到今日清单'}
                         </button>
                         <button class="btn btn-secondary" onclick="openEditTemplateModal(${t.id})" style="font-size: 0.85rem; padding: 10px 12px; background: #faf5ff; color: #6b21a8; border-color: #d8b4fe;" title="永久修改模板内容">
-                            ✏️ 编辑模板
-                        </button>
-                        <button class="btn btn-secondary" onclick="cloneTemplate(${t.id})" style="font-size: 0.85rem; padding: 10px 12px; background: #f0fdf4; color: #166534; border-color: #bbf7d0;" title="克隆生成一个完全一样的新模板副本">
-                            🐑 克隆副本
-                        </button>
-                        <button class="btn btn-secondary" onclick="importTemplateToPublish(${t.id})" style="font-size: 0.85rem; padding: 10px 12px;" title="导入到发布面板编辑修改">
-                            📝 导入草稿
+                            ✏️ 编辑
                         </button>
                     </div>
                 </div>
@@ -3240,7 +3704,10 @@
 
     // Initialize application on load
     updateTaskPreview();
-    renderWeiqiSubmenuItems('beginner');
+    loadWeiqiCurriculumData().then(() => {
+        renderWeiqiSubmenuItems('beginner');
+        updateWeiqiStageTopicsStrikethrough();
+    });
     checkCurrentSession();
 </script>
 </body>
