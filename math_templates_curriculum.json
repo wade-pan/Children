@@ -41,7 +41,7 @@
     "target_student": "安仔",
     "base_reward_flowers": 3,
     "base_reward_stars": 3,
-    "story_scenario": "妈妈买了一张香喷喷的牛肉披萨，切成了同样大小的 8 片。安仔吃了 3 片，姐姐安妞吃了 2 片。",
+    "story_scenario": "妈妈买了一张香喷喷的牛肉披萨，切成了同样大小的 8 片。安仔吃了 3 片，姐姐恩妞吃了 2 片。",
     "question": "披萨盒子里还剩下几片披萨？",
     "answer_unit": "片",
     "standard_answer": "3",
@@ -49,7 +49,7 @@
       {
         "level": 1,
         "title": "💡 提示 1 (思路点拨)",
-        "content": "总共有 8 片披萨，先算一算安仔和安妞一共吃掉了多少片！",
+        "content": "总共有 8 片披萨，先算一算安仔和恩妞一共吃掉了多少片！",
         "flower_deduction": 1
       },
       {
@@ -143,7 +143,7 @@
     "target_student": "安仔",
     "base_reward_flowers": 3,
     "base_reward_stars": 3,
-    "story_scenario": "安仔的书包里有 14 支彩色铅笔，姐姐安妞的书包里有 8 支彩色铅笔。",
+    "story_scenario": "安仔的书包里有 14 支彩色铅笔，姐姐恩妞的书包里有 8 支彩色铅笔。",
     "question": "安仔要送给姐姐几支铅笔，两个人的铅笔数量就会变得一样多？",
     "answer_unit": "支",
     "standard_answer": "3",
@@ -653,7 +653,7 @@
     "target_student": "安仔",
     "base_reward_flowers": 3,
     "base_reward_stars": 3,
-    "story_scenario": "桌上有红、黄、蓝 3 只不透明盒子，分别装了苹果、香蕉和橙子各 1 个。姐姐安妞说：“红盒子里装的不是苹果”；安仔说：“黄盒子里装的是香蕉”。两人说的都是真话。",
+    "story_scenario": "桌上有红、黄、蓝 3 只不透明盒子，分别装了苹果、香蕉和橙子各 1 个。姐姐恩妞说：“红盒子里装的不是苹果”；安仔说：“黄盒子里装的是香蕉”。两人说的都是真话。",
     "question": "请推理出：蓝盒子里装的是什么水果？(填写：苹果 / 橙子 / 香蕉)",
     "answer_unit": "",
     "standard_answer": "苹果",

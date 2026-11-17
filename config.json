@@ -1,6 +1,6 @@
 {
   "app_name": "TuanTuanYuanYuanTaskForce",
-  "app_title": "安仔 安妞任务小分队系统",
+  "app_title": "安仔 恩妞任务小分队系统",
   "host": "0.0.0.0",
   "port": 5089,
   "primary_ip": "192.168.0.25",
@@ -19,12 +19,23 @@
       "grade": "三年级 (小学)",
       "allowed_tabs": ["tab-math", "tab-tasks", "tab-rewards"]
     },
+    "enniu": {
+      "password": "enniu123",
+      "role": "child",
+      "member_id": 2,
+      "name": "恩妞",
+      "nickname": "Enniu",
+      "avatar": "👧",
+      "age": 12,
+      "grade": "初中预备班 (初一)",
+      "allowed_tabs": ["tab-math", "tab-tasks", "tab-rewards"]
+    },
     "anniu": {
       "password": "anniu123",
       "role": "child",
       "member_id": 2,
-      "name": "安妞",
-      "nickname": "Anniu",
+      "name": "恩妞",
+      "nickname": "Enniu",
       "avatar": "👧",
       "age": 12,
       "grade": "初中预备班 (初一)",
@@ -53,8 +64,8 @@
     },
     {
       "id": 2,
-      "name": "安妞",
-      "username": "anniu",
+      "name": "恩妞",
+      "username": "enniu",
       "role": "姐姐 / 学习小能手",
       "avatar": "👧",
       "age": 12,

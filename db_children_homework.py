@@ -34,8 +34,8 @@ MEMBERS = [
 		"avatar": "👦"
 	},
 	{
-		"student_no": "AN002",
-		"name": "安妞",
+		"student_no": "EN002",
+		"name": "恩妞",
 		"role": "姐姐 / 学习小能手",
 		"gender": "女",
 		"grade": "初中预备班 (初一)",

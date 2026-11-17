@@ -41,7 +41,7 @@ try:
 except Exception:
 	config_data = {
 		"app_name": "TuanTuanYuanYuanTaskForce",
-		"app_title": "安仔 安妞任务小分队系统",
+		"app_title": "安仔 恩妞任务小分队系统",
 		"host": "0.0.0.0",
 		"port": 5089,
 		"default_grade": "三年级 & 初中预备班",
@@ -93,7 +93,7 @@ def login_api():
 	"""
 	Authenticates user:
 	  - anzai / anzai123 (安仔 · 弟弟 · 9岁 · 三年级)
-	  - anniu / anniu123 (安妞 · 姐姐 · 12岁 · 初中预备班)
+	  - enniu / enniu123 (恩妞 · 姐姐 · 12岁 · 初中预备班)
 	  - admin / admin1234 (家长管理员)
 	"""
 	try:
@@ -454,7 +454,7 @@ if __name__ == "__main__":
 	local_ips = get_all_local_ips()
 
 	print("=" * 65, flush=True)
-	print("🏆 安仔 安妞任务小分队系统 (Task Force Hub) 已就绪启动", flush=True)
+	print("🏆 安仔 恩妞任务小分队系统 (Task Force Hub) 已就绪启动", flush=True)
 	print(f"📍 本地访问地址: http://localhost:{port}", flush=True)
 	print(f"📍 本地 127 地址: http://127.0.0.1:{port}", flush=True)
 	if extra_ip:
