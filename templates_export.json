@@ -55,11 +55,11 @@
   },
   {
     "id": 7,
-    "name": "♟️ 围棋·初级模板2-4：倒扑",
+    "name": "♟️ 围棋·初级模板2-4：倒扑 (Sensei's Library Snapback)",
     "category": "♟️ 教妹妹围棋",
     "assignee": "潘翼芃 (指导妹妹)",
-    "content": "1. 哥哥在棋盘一路摆出白棋虎口死活（黑子：A1, A2, B3, C3, D2, E1；白子：B1, B2, C2, D1）。\n2. 引导妹妹观察 C1 虎口：“如果黑棋送一个子到 C1 虎口，会发生什么？”\n3. 妹妹执黑演练 3 步倒扑：黑1送吃(C1) ➔ 白2提吃 ➔ 黑3倒扑全提白棋整块！\n4. 总结口诀：“送子入虎口，倒扑全拿走！”",
-    "requirements": "【阶段检验】妹妹能独立摆出 C1 倒扑并说出口诀。",
+    "content": "1. 哥哥按照 Sensei's Library 标准棋谱摆出倒扑局面（黑子：D7, E7, F7, D6, G6, G5, F4, G4；白子：C7, C6, E6, F6, D5, D4, E4, D3, F3, G3）。\n2. 引导妹妹观察 E6/F6 白子：“黑棋如果下在 E5 (扑入 Throw-in)，会发生什么？”\n3. 妹妹执黑演练 3 步倒扑：黑1扑入(E5) ➔ 白2提吃 ➔ 黑3倒扑全提白棋三子！\n4. 总结 Sensei's Library 经典口诀：“Play a stone to be captured, then snap back for a bigger capture!”",
+    "requirements": "【阶段检验】妹妹能独立在棋盘上走出 E5 扑入并完成倒扑全提。",
     "reward_flowers": 2
   },
   {

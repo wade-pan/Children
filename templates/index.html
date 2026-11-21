@@ -3056,23 +3056,23 @@
         },
         "2-4": {
             board_size: 9,
-            black_stones: ["A1", "A2", "B2", "C3", "D3", "E2", "E1"],
-            white_stones: ["B1", "C2", "D2", "D1"],
+            black_stones: ["D7", "E7", "F7", "D6", "G6", "G5", "F4", "G4"],
+            white_stones: ["C7", "C6", "E6", "F6", "D5", "D4", "E4", "D3", "F3", "G3"],
             target_player: "black",
-            mission: "倒扑手筋（送子入虎口）",
-            question: "黑先吃白 · 倒扑手筋：白棋在下边一路形成了致命虎口，黑棋该下在何处扑入牺牲，随后倒扑全歼白棋？",
-            solution_coord: "C1",
+            mission: "倒扑手筋 (Sensei's Library Snapback / 扑入)",
+            question: "黑先吃白 · 倒扑手筋：黑棋如何通过“扑入 (Throw-in)”制造倒扑，吃掉白棋 E6 和 F6 两颗棋子？",
+            solution_coord: "E5",
             solution_steps: [
-                {"move": 1, "color": "black", "coord": "C1", "note": "黑1扑入白棋虎口 C1 牺牲送吃！白棋整块 4 子瞬间只剩 0 气濒死"},
-                {"move": 2, "color": "white", "coord": "C1", "note": "白2提掉 C1 黑子，但提子后白棋连成一体依然只有最后 1 气！"},
-                {"move": 3, "color": "black", "coord": "C1", "note": "黑3再次落子 C1，直接倒扑全提白棋整块 4 颗子！"}
+                {"move": 1, "color": "black", "coord": "E5", "note": "黑1扑入关键要害 E5 (Throw-in)！白棋两子瞬间处于叫吃状态"},
+                {"move": 2, "color": "white", "coord": "E5", "note": "白2提吃 E5 黑子，但提吃后白棋三子只剩最后 1 气！"},
+                {"move": 3, "color": "black", "coord": "E5", "note": "黑3再次落子 E5 倒扑，直接提光白棋 E6、F6、E5 三颗子！"}
             ],
             hints: [
-                {"level": 1, "title": "💡 提示 1 (找虎口)", "content": "仔细看白棋 B1、C2、D2、D1 包围的空位虎口 C1！"},
-                {"level": 2, "title": "🔍 提示 2 (舍小取大)", "content": "勇敢地把一颗黑子送进 C1 虎口，故意让白棋提吃！"},
-                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解是 C1！白提掉后自身依然气紧，黑再下 C1 即可全提！"}
+                {"level": 1, "title": "💡 提示 1 (扑入 Throw-in)", "content": "Sensei's Library 经典战术：主动把一子送入对方口中破坏对方气数！"},
+                {"level": 2, "title": "🔍 提示 2 (制造气紧)", "content": "故意让白棋提吃，白提吃后自身反而变成只剩最后 1 气！"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解第一手走 E5 扑入！白提后黑再下 E5 倒扑全提！"}
             ],
-            explanation: "【倒扑经典手筋】：倒扑口诀：“送子入虎口，倒扑全拿走！”先牺牲一子压缩敌方气数，待对方提吃后立即倒扑提回整块！"
+            explanation: "【Sensei's Library 倒扑 (Snapback / Utte-gaeshi)】：A snapback is created by playing a single stone with the intent of being captured because the reply to the capture is a larger capture! 先弃一子扑入，待对方提吃后再倒扑全提！"
         },
         "3-1": {
             board_size: 9,
