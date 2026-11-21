@@ -810,8 +810,14 @@ def auto_git_sync_templates():
 		export_templates_to_json()
 		import subprocess
 		ts_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		cmd = f'git -C "{current_dir}" add templates_export.json weiqi_templates_curriculum.json config.json templates/index.html && git -C "{current_dir}" commit -m "auto: sync template changes to git [{ts_str}]" && git -C "{current_dir}" push origin main'
-		subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+		git_env = os.environ.copy()
+		git_env["GIT_AUTHOR_NAME"] = "WadePan"
+		git_env["GIT_AUTHOR_EMAIL"] = "wade_pan@apple.com"
+		git_env["GIT_COMMITTER_NAME"] = "WadePan"
+		git_env["GIT_COMMITTER_EMAIL"] = "wade_pan@apple.com"
+		
+		cmd = f'git -C "{current_dir}" -c user.name="WadePan" -c user.email="wade_pan@apple.com" add templates_export.json weiqi_templates_curriculum.json config.json templates/index.html && git -C "{current_dir}" -c user.name="WadePan" -c user.email="wade_pan@apple.com" commit -m "auto: sync template changes to git [{ts_str}]" && git -C "{current_dir}" push origin main'
+		subprocess.Popen(cmd, shell=True, env=git_env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 	except Exception:
 		pass
 
@@ -949,16 +955,23 @@ def git_push_api():
 		# 1. Ensure latest templates are exported to JSON
 		export_templates_to_json()
 
-		# 2. Run git commit & push
+		# 2. Setup robust Git user identity
+		git_env = os.environ.copy()
+		git_env["GIT_AUTHOR_NAME"] = "WadePan"
+		git_env["GIT_AUTHOR_EMAIL"] = "wade_pan@apple.com"
+		git_env["GIT_COMMITTER_NAME"] = "WadePan"
+		git_env["GIT_COMMITTER_EMAIL"] = "wade_pan@apple.com"
+
+		# 3. Run git commit & push
 		ts_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		cmd = f'git -C "{current_dir}" add templates_export.json weiqi_templates_curriculum.json config.json templates/index.html && git -C "{current_dir}" commit -m "update: sync custom templates by admin [{ts_str}]" && git -C "{current_dir}" push origin main'
+		cmd = f'git -C "{current_dir}" -c user.name="WadePan" -c user.email="wade_pan@apple.com" add templates_export.json weiqi_templates_curriculum.json config.json templates/index.html && git -C "{current_dir}" -c user.name="WadePan" -c user.email="wade_pan@apple.com" commit -m "update: sync custom templates by admin [{ts_str}]" && git -C "{current_dir}" push origin main'
 		
-		proc = subprocess.run(cmd, shell=True, text=True, capture_output=True, timeout=25)
+		proc = subprocess.run(cmd, shell=True, env=git_env, text=True, capture_output=True, timeout=25)
 		
 		# If working tree was clean / nothing new to commit
 		if proc.returncode != 0 and ("nothing to commit" in proc.stdout or "nothing to commit" in proc.stderr):
 			# Try push only
-			push_proc = subprocess.run(f'git -C "{current_dir}" push origin main', shell=True, text=True, capture_output=True, timeout=25)
+			push_proc = subprocess.run(f'git -C "{current_dir}" push origin main', shell=True, env=git_env, text=True, capture_output=True, timeout=25)
 			return jsonify({
 				"success": True,
 				"message": "✅ 模板与文件已经是最新状态，远程 Git 已同步！",
