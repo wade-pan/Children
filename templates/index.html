@@ -3056,11 +3056,11 @@
         },
         "2-4": {
             board_size: 9,
-            black_stones: ["A1", "A2", "B3", "C3", "D2", "E1"],
-            white_stones: ["B1", "B2", "C2", "D1"],
+            black_stones: ["A1", "A2", "B2", "C3", "D3", "E2", "E1"],
+            white_stones: ["B1", "C2", "D2", "D1"],
             target_player: "black",
             mission: "倒扑手筋（送子入虎口）",
-            question: "黑先吃白：白棋 B1、B2、C2 和 D1 在一路形成了致命虎口，黑棋该下在何处扑入牺牲，随后倒扑全歼白棋？",
+            question: "黑先吃白 · 倒扑手筋：白棋在下边一路形成了致命虎口，黑棋该下在何处扑入牺牲，随后倒扑全歼白棋？",
             solution_coord: "C1",
             solution_steps: [
                 {"move": 1, "color": "black", "coord": "C1", "note": "黑1扑入白棋虎口 C1 牺牲送吃！白棋整块 4 子瞬间只剩 0 气濒死"},
@@ -3068,7 +3068,7 @@
                 {"move": 3, "color": "black", "coord": "C1", "note": "黑3再次落子 C1，直接倒扑全提白棋整块 4 颗子！"}
             ],
             hints: [
-                {"level": 1, "title": "💡 提示 1 (找虎口)", "content": "仔细看白棋 B1、C2、D1 三面包围的空位虎口 C1！"},
+                {"level": 1, "title": "💡 提示 1 (找虎口)", "content": "仔细看白棋 B1、C2、D2、D1 包围的空位虎口 C1！"},
                 {"level": 2, "title": "🔍 提示 2 (舍小取大)", "content": "勇敢地把一颗黑子送进 C1 虎口，故意让白棋提吃！"},
                 {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解是 C1！白提掉后自身依然气紧，黑再下 C1 即可全提！"}
             ],

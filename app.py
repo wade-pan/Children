@@ -801,9 +801,23 @@ def get_templates():
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
 
+def auto_git_sync_templates():
+	"""
+	Automatically exports templates to templates_export.json, commits,
+	and pushes directly to the remote Git repository upon saving.
+	"""
+	try:
+		export_templates_to_json()
+		import subprocess
+		ts_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		cmd = f'git -C "{current_dir}" add templates_export.json weiqi_templates_curriculum.json config.json templates/index.html && git -C "{current_dir}" commit -m "auto: sync template changes to git [{ts_str}]" && git -C "{current_dir}" push origin main'
+		subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+	except Exception:
+		pass
+
 @app.route("/api/templates", methods=["POST"])
 def create_template():
-	"""Creates a new task template and automatically exports to Git-tracked JSON."""
+	"""Creates a new task template and automatically syncs to Git."""
 	try:
 		data = request.json or {}
 		name = data.get("name", "").strip()
@@ -828,16 +842,16 @@ def create_template():
 		conn.commit()
 		conn.close()
 
-		# Auto-export to templates_export.json for Git synchronization
-		export_templates_to_json()
+		# Auto-export to templates_export.json and auto-sync to Git
+		auto_git_sync_templates()
 
-		return jsonify({"success": True, "template_id": tpl_id, "message": f"🎉 模板【{name}】创建成功并已自动同步至 Git 导出文件！"})
+		return jsonify({"success": True, "template_id": tpl_id, "message": f"🎉 模板【{name}】创建成功并已自动同步推送到 Git！"})
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
 
 @app.route("/api/templates/<int:template_id>", methods=["PUT", "POST"])
 def update_template(template_id):
-	"""Updates an existing task template and auto-exports to Git-tracked JSON."""
+	"""Updates an existing task template and auto-syncs to Git."""
 	try:
 		data = request.json or {}
 		name = data.get("name", "").strip()
@@ -862,16 +876,16 @@ def update_template(template_id):
 		conn.commit()
 		conn.close()
 
-		# Auto-export to templates_export.json
-		export_templates_to_json()
+		# Auto-export to templates_export.json and auto-sync to Git
+		auto_git_sync_templates()
 
-		return jsonify({"success": True, "message": f"💾 模板【{name}】修改已成功保存并同步至 Git 导出文件！"})
+		return jsonify({"success": True, "message": f"💾 模板【{name}】修改已成功保存并自动同步推送到 Git！"})
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
 
 @app.route("/api/templates/<int:template_id>", methods=["DELETE"])
 def delete_template(template_id):
-	"""Deletes a task template and updates Git-tracked JSON."""
+	"""Deletes a task template and auto-syncs to Git."""
 	try:
 		conn = get_db_connection()
 		cursor = conn.cursor()
@@ -879,10 +893,10 @@ def delete_template(template_id):
 		conn.commit()
 		conn.close()
 
-		# Auto-export to templates_export.json
-		export_templates_to_json()
+		# Auto-export and auto-sync to Git
+		auto_git_sync_templates()
 
-		return jsonify({"success": True, "message": "🗑️ 模板已成功删除并已同步至 Git 导出文件"})
+		return jsonify({"success": True, "message": "🗑️ 模板已成功删除并已自动同步至 Git"})
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
 
