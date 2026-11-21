@@ -2046,6 +2046,7 @@
         let html = '';
         tasksToRender.forEach(t => {
             const isWeiqi = (t.category && t.category.includes('围棋')) || (t.title && t.title.includes('围棋'));
+            const puzzle = isWeiqi ? getBoardPuzzleForTemplate(t) : null;
             const subtasks = t.subtasks || [];
             const memberSubs = t.member_submissions || [];
 
@@ -2072,11 +2073,42 @@
                             ${t.title}
                         </h3>
 
-                        <!-- Special Weiqi Notice -->
+                        <!-- Special Weiqi Notice & Board Diagram -->
                         ${isWeiqi ? `
                             <div style="background: #fef9c3; border: 1px solid #fde047; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; color: #854d0e; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                                 ♟️ 围棋特别奖励规则：每完成 1 个小任务，哥哥与妹妹双方各获得 +1 朵小红花 🌸！
                             </div>
+
+                            ${puzzle ? `
+                                <div style="background: #fffdf5; border: 1.5px solid #fde68a; border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; display: flex; gap: 16px; align-items: center; box-shadow: 0 2px 8px rgba(180, 83, 9, 0.05);">
+                                    <div onclick="openWeiqiPuzzleModalByTaskId(${t.id})" style="flex-shrink: 0; width: 130px; height: 130px; line-height: 0; border-radius: 10px; overflow: hidden; border: 2.5px solid #b45309; box-shadow: 0 4px 12px rgba(180, 83, 9, 0.2); cursor: pointer;" title="点击放大查看棋盘大图与步骤演示">
+                                        ${renderGoBoardSVG(puzzle, 130)}
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                            <span class="badge badge-weiqi" style="font-size: 0.8rem; padding: 2px 8px;">
+                                                🎯 ${puzzle.mission || '黑先吃白'}
+                                            </span>
+                                            <span style="color: #f59e0b; font-size: 0.85rem;">
+                                                ${'⭐'.repeat(puzzle.difficulty || 2)}
+                                            </span>
+                                        </div>
+                                        <div style="font-size: 0.9rem; font-weight: 800; color: #92400e; margin-bottom: 6px; line-height: 1.4;">
+                                            ${puzzle.question || t.title}
+                                        </div>
+                                        <div style="font-size: 0.78rem; color: #78350f; margin-bottom: 8px; line-height: 1.4;">
+                                            ⚫ 黑子: <span style="font-family: monospace; font-weight: 700;">${(puzzle.black_stones || []).slice(0, 5).join(' ')}</span>
+                                            ${(puzzle.black_stones && puzzle.black_stones.length > 5) ? '...' : ''}
+                                            &nbsp;|&nbsp;
+                                            ⚪ 白子: <span style="font-family: monospace; font-weight: 700;">${(puzzle.white_stones || []).slice(0, 5).join(' ')}</span>
+                                            ${(puzzle.white_stones && puzzle.white_stones.length > 5) ? '...' : ''}
+                                        </div>
+                                        <button type="button" class="btn btn-secondary" onclick="openWeiqiPuzzleModalByTaskId(${t.id})" style="padding: 4px 12px; font-size: 0.78rem; background: #fffbeb; color: #b45309; border: 1px solid #fde68a; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; cursor: pointer;">
+                                            🔍 放大棋盘 · 提示与落子演示 ➔
+                                        </button>
+                                    </div>
+                                </div>
+                            ` : ''}
                         ` : ''}
 
                         <!-- Member Check-in Sections -->
@@ -2156,6 +2188,11 @@
                         <button class="btn btn-primary" onclick="copyTaskWechatByObject(${t.id})" style="flex: 1; font-size: 0.85rem; padding: 8px;">
                             📋 复制微信播报
                         </button>
+                        ${(isWeiqi && puzzle) ? `
+                            <button class="btn btn-secondary" onclick="openWeiqiPuzzleModalByTaskId(${t.id})" style="font-size: 0.85rem; padding: 8px 14px; background: #fffdf5; color: #b45309; border-color: #fde68a; font-weight: 700;">
+                                ♟️ 棋盘大图与解析
+                            </button>
+                        ` : ''}
                         ${!isChild ? `
                             <button class="btn btn-secondary" onclick="openEditTaskModal(${t.id})" style="font-size: 0.85rem; padding: 8px 14px; background: #eff6ff; color: #2563eb; border-color: #bfdbfe;" title="编辑任务内容与小任务">
                                 ✏️ 编辑任务
@@ -3533,7 +3570,7 @@
         if (!t) return null;
         if (t.board_puzzle) return t.board_puzzle;
 
-        const tName = t.name || '';
+        const tName = t.name || t.title || '';
         const tCode = t.code || '';
 
         // 1. Direct code lookup (e.g. "1-1", "2-4", "中级1-3", "高级2-1")
@@ -3744,19 +3781,32 @@
         return svg;
     }
 
-    function openWeiqiPuzzleModal(templateId) {
-        let templates = (globalTemplatesList && globalTemplatesList.length > 0) ? globalTemplatesList : DEFAULT_TEMPLATES;
-        const t = templates.find(x => x.id === templateId);
+    function openWeiqiPuzzleModalByTaskId(taskId) {
+        const t = (globalTaskList || []).find(x => x.id === Number(taskId));
+        if (t) {
+            openWeiqiPuzzleModal(t);
+        }
+    }
+
+    function openWeiqiPuzzleModal(target) {
+        let t = null;
+        if (typeof target === 'number' || typeof target === 'string') {
+            let templates = (globalTemplatesList && globalTemplatesList.length > 0) ? globalTemplatesList : DEFAULT_TEMPLATES;
+            t = templates.find(x => x.id === Number(target)) || (globalTaskList || []).find(x => x.id === Number(target));
+        } else if (typeof target === 'object' && target !== null) {
+            t = target;
+        }
+
         if (!t) return;
 
         const puzzle = getBoardPuzzleForTemplate(t);
         currentActivePuzzle = { template: t, puzzle: JSON.parse(JSON.stringify(puzzle)) };
         currentPuzzleIsSolved = false;
 
-        document.getElementById('weiqiModalTitle').innerHTML = `♟️ ${t.name}`;
+        document.getElementById('weiqiModalTitle').innerHTML = `♟️ ${t.name || t.title}`;
         document.getElementById('weiqiModalMissionBadge').textContent = puzzle.mission || '黑先吃白 · 经典手筋';
         document.getElementById('weiqiModalDiffStars').textContent = '⭐'.repeat(t.difficulty || puzzle.difficulty || 2);
-        document.getElementById('weiqiModalQuestion').textContent = puzzle.question || t.target_goal || '请观察棋盘，找出黑棋第一步下在何处！';
+        document.getElementById('weiqiModalQuestion').textContent = puzzle.question || t.target_goal || t.title || '请观察棋盘，找出黑棋第一步下在何处！';
 
         // Reset Hints
         for (let i = 1; i <= 3; i++) {
