@@ -1178,12 +1178,15 @@
                             点击任意大类进入对应子任务模板列表，支持 1 键套用发布至微信群或直接编辑修改
                         </p>
                     </div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <div class="admin-git-ctrls" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-primary" onclick="triggerAdminGitPush()" style="font-size: 0.82rem; padding: 6px 14px; background: linear-gradient(135deg, #4338ca 0%, #312e81 100%); font-weight: 800; border: none; box-shadow: 0 2px 6px rgba(67, 56, 202, 0.3);" title="【仅家长管理员可用】一键将最新模板提交并推送到 GitHub 远程仓库">
+                            🚀 一键 Git Commit & Push
+                        </button>
                         <button type="button" class="btn btn-secondary" onclick="exportTemplatesToGitFile()" style="font-size: 0.82rem; padding: 6px 14px; background: #f0fdf4; color: #166534; border-color: #86efac; font-weight: 700;" title="将当前数据库所有模板导出到 Git 跟踪文件 templates_export.json">
-                            💾 导出同步到 Git 文件
+                            💾 导出到 Git 文件
                         </button>
                         <button type="button" class="btn btn-secondary" onclick="importTemplatesFromGitFile()" style="font-size: 0.82rem; padding: 6px 14px; background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; font-weight: 700;" title="从 Git 跟踪的 templates_export.json 文件重新恢复所有模板">
-                            📥 从 Git 文件重新加载
+                            📥 从 Git 重新加载
                         </button>
                         <a href="/api/templates/download" class="btn btn-secondary" style="font-size: 0.82rem; padding: 6px 14px; text-decoration: none;" title="下载 JSON 格式模板备份文件">
                             📥 下载 JSON 备份
@@ -1699,11 +1702,15 @@
         if (tabTasks) tabTasks.style.display = 'inline-flex';
         if (tabRewards) tabRewards.style.display = 'inline-flex';
         
-        // Hide Admin controls in Rewards tab if child
+        // Hide Admin controls in Rewards tab & Templates Git Sync toolbar if child
         const resetBtn = document.getElementById('btnResetRewards');
         if (resetBtn) resetBtn.style.display = isChild ? 'none' : 'inline-flex';
 
         document.querySelectorAll('.admin-reward-ctrls').forEach(el => {
+            el.style.display = isChild ? 'none' : 'flex';
+        });
+
+        document.querySelectorAll('.admin-git-ctrls').forEach(el => {
             el.style.display = isChild ? 'none' : 'flex';
         });
 
@@ -3049,23 +3056,23 @@
         },
         "2-4": {
             board_size: 9,
-            black_stones: ["C3", "C4", "C5", "D3", "E3", "F3", "F4", "F5"],
-            white_stones: ["D4", "E4", "D5"],
+            black_stones: ["A1", "A2", "B3", "C3", "D2", "E1"],
+            white_stones: ["B1", "B2", "C2", "D1"],
             target_player: "black",
             mission: "倒扑手筋（送子入虎口）",
-            question: "黑棋该下在哪个位置，能巧妙倒扑提掉白棋整块？",
-            solution_coord: "E5",
+            question: "黑先吃白：白棋 B1、B2、C2 和 D1 在一路形成了致命虎口，黑棋该下在何处扑入牺牲，随后倒扑全歼白棋？",
+            solution_coord: "C1",
             solution_steps: [
-                {"move": 1, "color": "black", "coord": "E5", "note": "黑1扑入虎口！白三子瞬间处于被提边缘"},
-                {"move": 2, "color": "white", "coord": "E5", "note": "白2提掉黑1子，但自身只剩最后1气！"},
-                {"move": 3, "color": "black", "coord": "E5", "note": "黑3再次落子，直接倒扑全提白棋！"}
+                {"move": 1, "color": "black", "coord": "C1", "note": "黑1扑入白棋虎口 C1 牺牲送吃！白棋整块 4 子瞬间只剩 0 气濒死"},
+                {"move": 2, "color": "white", "coord": "C1", "note": "白2提掉 C1 黑子，但提子后白棋连成一体依然只有最后 1 气！"},
+                {"move": 3, "color": "black", "coord": "C1", "note": "黑3再次落子 C1，直接倒扑全提白棋整块 4 颗子！"}
             ],
             hints: [
-                {"level": 1, "title": "💡 提示 1 (观察气数)", "content": "仔细看白棋 D4、E4、D5，如果从外面打吃，白棋接上就跑了！"},
-                {"level": 2, "title": "🔍 提示 2 (虎口扑入)", "content": "勇敢地把一颗黑子送进白棋虎口 E5，故意让对方提掉！"},
-                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "第一手黑棋走 E5！白提掉后白棋只剩 1 气，黑再下一手 E5 即可全部提回！"}
+                {"level": 1, "title": "💡 提示 1 (找虎口)", "content": "仔细看白棋 B1、C2、D1 三面包围的空位虎口 C1！"},
+                {"level": 2, "title": "🔍 提示 2 (舍小取大)", "content": "勇敢地把一颗黑子送进 C1 虎口，故意让白棋提吃！"},
+                {"level": 3, "title": "🎯 提示 3 (落子坐标)", "content": "正解是 C1！白提掉后自身依然气紧，黑再下 C1 即可全提！"}
             ],
-            explanation: "【倒扑妙手分析】：先弃一子送入对方口中，破坏对方眼形并紧住对方最后的气，下一步直接全提！"
+            explanation: "【倒扑经典手筋】：倒扑口诀：“送子入虎口，倒扑全拿走！”先牺牲一子压缩敌方气数，待对方提吃后立即倒扑提回整块！"
         },
         "3-1": {
             board_size: 9,
@@ -3928,6 +3935,23 @@
         const isHidden = (textEl.style.display === 'none');
         textEl.style.display = isHidden ? 'block' : 'none';
         if (btnEl) btnEl.textContent = isHidden ? '收起' : '揭开';
+    }
+
+    async function triggerAdminGitPush() {
+        if (!confirm('【家长管理员专属】确定将当前最新的所有自定义任务模板与配置一键提交并推送到 GitHub 远程仓库吗？')) return;
+        showToast('🚀 正在执行 Git Commit & Push，请稍候...');
+        try {
+            const res = await fetch('/api/git/push', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                showToast(data.message || '🎉 远程 Git 推送成功！');
+                alert(data.message + (data.details ? '\n\n' + data.details : ''));
+            } else {
+                alert('❌ ' + (data.error || 'Git Push 失败'));
+            }
+        } catch(e) {
+            showToast('❌ 请求超时或网络异常');
+        }
     }
 
     async function exportTemplatesToGitFile() {

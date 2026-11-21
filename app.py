@@ -886,9 +886,16 @@ def delete_template(template_id):
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
 
+def check_is_admin():
+	"""Checks whether the currently active session belongs to an admin."""
+	return session.get("role") == "admin"
+
 @app.route("/api/templates/export", methods=["POST"])
 def export_templates_api():
-	"""Manually triggers export of templates from SQLite to templates_export.json."""
+	"""Manually triggers export of templates from SQLite to templates_export.json (Admin only)."""
+	if not check_is_admin():
+		return jsonify({"success": False, "error": "🔒 权限不足：只有家长管理员 (Admin) 可以执行 Git 导出！"}), 403
+
 	res = export_templates_to_json()
 	if res.get("success"):
 		return jsonify({"success": True, "count": res.get("count"), "message": f"📤 成功导出 {res.get('count')} 个模板至 Git 文件 templates_export.json！"})
@@ -896,17 +903,64 @@ def export_templates_api():
 
 @app.route("/api/templates/import", methods=["POST"])
 def import_templates_api():
-	"""Manually imports templates from templates_export.json into SQLite database."""
+	"""Manually imports templates from templates_export.json into SQLite database (Admin only)."""
+	if not check_is_admin():
+		return jsonify({"success": False, "error": "🔒 权限不足：只有家长管理员 (Admin) 可以从 Git 文件恢复！"}), 403
+
 	res = import_templates_from_json()
 	return jsonify(res)
 
 @app.route("/api/templates/download", methods=["GET"])
 def download_templates_json():
-	"""Downloads templates_export.json directly."""
+	"""Downloads templates_export.json directly (Admin only)."""
+	if not check_is_admin():
+		return jsonify({"success": False, "error": "🔒 权限不足：只有管理员可以下载备份"}), 403
+
 	export_templates_to_json()
 	if os.path.exists(TEMPLATES_EXPORT_PATH):
 		return send_file(TEMPLATES_EXPORT_PATH, as_attachment=True, download_name="templates_export.json")
 	return jsonify({"success": False, "error": "文件不存在"})
+
+@app.route("/api/git/push", methods=["POST"])
+def git_push_api():
+	"""
+	Executes Git Commit and Push to remote repository.
+	Strictly restricted to Admin role.
+	"""
+	if not check_is_admin():
+		return jsonify({"success": False, "error": "🔒 权限不足：只有家长管理员 (Admin) 可以执行 Git Push！"}), 403
+
+	try:
+		import subprocess
+		# 1. Ensure latest templates are exported to JSON
+		export_templates_to_json()
+
+		# 2. Run git commit & push
+		ts_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		cmd = f'git -C "{current_dir}" add templates_export.json weiqi_templates_curriculum.json config.json templates/index.html && git -C "{current_dir}" commit -m "update: sync custom templates by admin [{ts_str}]" && git -C "{current_dir}" push origin main'
+		
+		proc = subprocess.run(cmd, shell=True, text=True, capture_output=True, timeout=25)
+		
+		# If working tree was clean / nothing new to commit
+		if proc.returncode != 0 and ("nothing to commit" in proc.stdout or "nothing to commit" in proc.stderr):
+			# Try push only
+			push_proc = subprocess.run(f'git -C "{current_dir}" push origin main', shell=True, text=True, capture_output=True, timeout=25)
+			return jsonify({
+				"success": True,
+				"message": "✅ 模板与文件已经是最新状态，远程 Git 已同步！",
+				"details": push_proc.stdout or push_proc.stderr
+			})
+		elif proc.returncode == 0:
+			return jsonify({
+				"success": True,
+				"message": "🎉 成功将最新模板和修改提交并推送到 GitHub 远程仓库！",
+				"details": proc.stdout
+			})
+		else:
+			err_msg = proc.stderr or proc.stdout
+			return jsonify({"success": False, "error": f"Git Push 失败: {err_msg}"})
+	except Exception as e:
+		return jsonify({"success": False, "error": f"执行 Git Push 出错: {str(e)}"})
 
 if __name__ == "__main__":
 	try:
