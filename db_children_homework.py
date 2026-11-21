@@ -7,6 +7,7 @@ from datetime import datetime, date
 # Directory setup
 current_dir = os.path.dirname(os.path.abspath(__file__))
 LOCAL_DB_PATH = os.path.join(current_dir, "homework.db")
+TEMPLATES_EXPORT_PATH = os.path.join(current_dir, "templates_export.json")
 
 # Default to independent local homework.db (or custom path from env)
 DB_PATH = os.environ.get("CHILDREN_DB_PATH", LOCAL_DB_PATH)
@@ -276,8 +277,18 @@ def init_db(db_path=DB_PATH):
 	# Seed default templates ONLY if empty (preserves user-edited & cloned templates)
 	cursor.execute("SELECT COUNT(*) FROM templates")
 	if cursor.fetchone()[0] == 0:
-		seed_default_templates(cursor)
-		conn.commit()
+		if os.path.exists(TEMPLATES_EXPORT_PATH):
+			conn.close()
+			import_templates_from_json(db_path, TEMPLATES_EXPORT_PATH)
+			conn = get_db_connection(db_path)
+			cursor = conn.cursor()
+		else:
+			seed_default_templates(cursor)
+			conn.commit()
+			conn.close()
+			export_templates_to_json(db_path, TEMPLATES_EXPORT_PATH)
+			conn = get_db_connection(db_path)
+			cursor = conn.cursor()
 
 	# Seed initial tasks & weiqi lessons
 	cursor.execute("SELECT COUNT(*) FROM homework")
@@ -713,6 +724,54 @@ def seed_default_templates(cursor):
 		INSERT INTO templates (name, category, assignee, content, requirements, reward_flowers)
 		VALUES (?, ?, ?, ?, ?, ?)
 	""", templates)
+
+def export_templates_to_json(db_path=DB_PATH, json_path=TEMPLATES_EXPORT_PATH):
+	"""Exports all current templates from SQLite database into Git-tracked JSON file."""
+	try:
+		conn = get_db_connection(db_path)
+		cursor = conn.cursor()
+		cursor.execute("SELECT id, name, category, assignee, content, requirements, reward_flowers FROM templates ORDER BY id ASC")
+		rows = cursor.fetchall()
+		conn.close()
+
+		templates_list = [dict(r) for r in rows]
+		with open(json_path, "w", encoding="utf-8") as f:
+			json.dump(templates_list, f, ensure_ascii=False, indent=2)
+		return {"success": True, "count": len(templates_list), "path": json_path}
+	except Exception as e:
+		return {"success": False, "error": str(e)}
+
+def import_templates_from_json(db_path=DB_PATH, json_path=TEMPLATES_EXPORT_PATH):
+	"""Imports / restores templates from Git-tracked JSON file into SQLite database."""
+	if not os.path.exists(json_path):
+		return {"success": False, "error": f"JSON 模板文件不存在: {json_path}"}
+	try:
+		with open(json_path, "r", encoding="utf-8") as f:
+			templates_list = json.load(f)
+
+		if not isinstance(templates_list, list) or len(templates_list) == 0:
+			return {"success": False, "error": "JSON 模板数据为空或格式不正确"}
+
+		conn = get_db_connection(db_path)
+		cursor = conn.cursor()
+		cursor.execute("DELETE FROM templates")
+		for t in templates_list:
+			cursor.execute("""
+				INSERT INTO templates (name, category, assignee, content, requirements, reward_flowers)
+				VALUES (?, ?, ?, ?, ?, ?)
+			""", (
+				t.get("name", "未命名模板"),
+				t.get("category", "♟️ 教妹妹围棋"),
+				t.get("assignee", "全员"),
+				t.get("content", ""),
+				t.get("requirements", ""),
+				int(t.get("reward_flowers", 1))
+			))
+		conn.commit()
+		conn.close()
+		return {"success": True, "count": len(templates_list), "message": f"🎉 成功从 Git 文件导入 {len(templates_list)} 个任务模板！"}
+	except Exception as e:
+		return {"success": False, "error": str(e)}
 
 def seed_sample_tasks(cursor):
 	"""Populates sample tasks with emphasis on Go tutoring."""

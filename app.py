@@ -3,7 +3,7 @@ import sys
 import json
 import socket
 from datetime import datetime, date
-from flask import Flask, render_template, request, jsonify, make_response, session
+from flask import Flask, render_template, request, jsonify, make_response, session, send_file
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
@@ -28,6 +28,7 @@ def get_all_local_ips():
 
 from db_children_homework import (
 	init_db, get_db_connection, format_wechat_task, reset_all_flowers_and_stars,
+	export_templates_to_json, import_templates_from_json, TEMPLATES_EXPORT_PATH,
 	DEFAULT_CATEGORIES, WEIQI_STAGES, WEIQI_CURRICULUM, DB_PATH
 )
 
@@ -802,7 +803,7 @@ def get_templates():
 
 @app.route("/api/templates", methods=["POST"])
 def create_template():
-	"""Creates a new task template."""
+	"""Creates a new task template and automatically exports to Git-tracked JSON."""
 	try:
 		data = request.json or {}
 		name = data.get("name", "").strip()
@@ -827,13 +828,16 @@ def create_template():
 		conn.commit()
 		conn.close()
 
-		return jsonify({"success": True, "template_id": tpl_id, "message": f"🎉 模板【{name}】创建成功！"})
+		# Auto-export to templates_export.json for Git synchronization
+		export_templates_to_json()
+
+		return jsonify({"success": True, "template_id": tpl_id, "message": f"🎉 模板【{name}】创建成功并已自动同步至 Git 导出文件！"})
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
 
 @app.route("/api/templates/<int:template_id>", methods=["PUT", "POST"])
 def update_template(template_id):
-	"""Updates an existing task template."""
+	"""Updates an existing task template and auto-exports to Git-tracked JSON."""
 	try:
 		data = request.json or {}
 		name = data.get("name", "").strip()
@@ -858,22 +862,51 @@ def update_template(template_id):
 		conn.commit()
 		conn.close()
 
-		return jsonify({"success": True, "message": f"💾 模板【{name}】修改已成功保存！"})
+		# Auto-export to templates_export.json
+		export_templates_to_json()
+
+		return jsonify({"success": True, "message": f"💾 模板【{name}】修改已成功保存并同步至 Git 导出文件！"})
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
 
 @app.route("/api/templates/<int:template_id>", methods=["DELETE"])
 def delete_template(template_id):
-	"""Deletes a task template."""
+	"""Deletes a task template and updates Git-tracked JSON."""
 	try:
 		conn = get_db_connection()
 		cursor = conn.cursor()
 		cursor.execute("DELETE FROM templates WHERE id = ?", (template_id,))
 		conn.commit()
 		conn.close()
-		return jsonify({"success": True, "message": "🗑️ 模板已成功删除"})
+
+		# Auto-export to templates_export.json
+		export_templates_to_json()
+
+		return jsonify({"success": True, "message": "🗑️ 模板已成功删除并已同步至 Git 导出文件"})
 	except Exception as e:
 		return jsonify({"success": False, "error": str(e)})
+
+@app.route("/api/templates/export", methods=["POST"])
+def export_templates_api():
+	"""Manually triggers export of templates from SQLite to templates_export.json."""
+	res = export_templates_to_json()
+	if res.get("success"):
+		return jsonify({"success": True, "count": res.get("count"), "message": f"📤 成功导出 {res.get('count')} 个模板至 Git 文件 templates_export.json！"})
+	return jsonify({"success": False, "error": res.get("error", "导出失败")})
+
+@app.route("/api/templates/import", methods=["POST"])
+def import_templates_api():
+	"""Manually imports templates from templates_export.json into SQLite database."""
+	res = import_templates_from_json()
+	return jsonify(res)
+
+@app.route("/api/templates/download", methods=["GET"])
+def download_templates_json():
+	"""Downloads templates_export.json directly."""
+	export_templates_to_json()
+	if os.path.exists(TEMPLATES_EXPORT_PATH):
+		return send_file(TEMPLATES_EXPORT_PATH, as_attachment=True, download_name="templates_export.json")
+	return jsonify({"success": False, "error": "文件不存在"})
 
 if __name__ == "__main__":
 	try:
